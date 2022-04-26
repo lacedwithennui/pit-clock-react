@@ -6,15 +6,13 @@ import tbaAuth from "../assets/tokens/tba-authtoken.json";
  * @returns JSON data from The Blue Alliance containing 
  * every match and its data for a given event.
  */
-async function getEventMatches(eventKey) {
+function getEventMatches(eventKey) {
     try {
         // let response = fetch("https://www.thebluealliance.com/api/v3/event/"
         //         +eventKey+"/matches/simple?X-TBA-Auth-Key="+tbaAuth);
-        let response = await fetch("../assets/cheesy_data/tba.json");
-                // .then(response => response.json());
-        let responseJSON = response.json();
-        console.log(responseJSON);
-        let sorted = sortMatchesByTime(responseJSON);
+        let response = fetch("../assets/cheesy_data/tba.json").then(response => response.json());
+        console.log(response);
+        var sorted = sortMatchesByTime(response);
         return sorted;
     } catch(error) {
         console.error("Error while getting TBA data from getEventMatches: " + error);
@@ -62,8 +60,8 @@ export async function getTeamEventStatus(teamKey, eventKey) {
  * @param {Dictionary} input the dictionary to sort
  * @returns the sorted dictionary
  */
-async function sortMatchesByTime(input) {
-    let receivedInput = await input;
+function sortMatchesByTime(input) {
+    let receivedInput = input;
     console.log("awaited input: " + input);
     console.log("recvd input from sorter " + receivedInput);
     var qm, ef, qf, sf, f;
@@ -113,22 +111,20 @@ async function sortMatchesByTime(input) {
 export function getCurrentEventMatch(eventKey) {
     try {
         let allEventMatches = getEventMatches(eventKey);
-        if(allEventMatches.isLoaded) {
-            console.log(allEventMatches);
-            var currentMatch;
-            for(let i = 0; i < allEventMatches.length; i++) {
-                if(allEventMatches[i].length !== 0) {
-                    for(let ii = 0; ii < allEventMatches[i].length; ii++) {
-                        if(allEventMatches[i][ii]["winning_alliance"] != ""
-                                || ii == allEventMatches[i].length+1) {
-                            currentMatch = allEventMatches[i][ii];
-                        }
+        console.log(allEventMatches);
+        var currentMatch;
+        for(let i = 0; i < allEventMatches.length; i++) {
+            if(allEventMatches[i].length !== 0) {
+                for(let ii = 0; ii < allEventMatches[i].length; ii++) {
+                    if(allEventMatches[i][ii]["winning_alliance"] != ""
+                            || ii == allEventMatches[i].length+1) {
+                        currentMatch = allEventMatches[i][ii];
                     }
                 }
             }
-            console.log("getEM match: " + currentMatch);
-            return currentMatch;
         }
+        console.log("getEM match: " + currentMatch);
+        return currentMatch;
     } catch(error) {
         console.log("Error getting current event match: " + error);
     }

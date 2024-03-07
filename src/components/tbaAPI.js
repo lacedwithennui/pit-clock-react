@@ -6,13 +6,12 @@ import tbaAuth from "../assets/tokens/tba-authtoken.json";
  * @returns JSON data from The Blue Alliance containing 
  * every match and its data for a given event.
  */
-function getEventMatches(eventKey) {
+export async function getEventMatches(eventKey) {
     try {
-        // let response = fetch("https://www.thebluealliance.com/api/v3/event/"
-        //         +eventKey+"/matches/simple?X-TBA-Auth-Key="+tbaAuth);
-        let response = fetch("../assets/cheesy_data/tba.json").then(response => response.json());
-        console.log(response);
-        var sorted = sortMatchesByTime(response);
+        let response = await fetch("https://www.thebluealliance.com/api/v3/event/"
+                +eventKey+"/matches/simple?X-TBA-Auth-Key="+tbaAuth);
+        let json = await response.json(); //testData
+        let sorted = sortMatchesByTime(json);
         return sorted;
     } catch(error) {
         console.error("Error while getting TBA data from getEventMatches: " + error);
@@ -26,12 +25,15 @@ function getEventMatches(eventKey) {
  * @returns JSON data from The Blue Alliance containing 
  * every match and its data for a given team within an event.
  */
-async function getTeamEventMatches(teamKey, eventKey) {
+export async function getTeamEventMatches(teamKey, eventKey) {
     try {
         let response = await fetch("https://www.thebluealliance.com/api/v3/team/"+teamKey+"/event/"
                 +eventKey+"/matches/simple?X-TBA-Auth-Key="+tbaAuth);
-        let responseJSON = await response.json();
-        return responseJSON;
+        // let response = await fetch("../assets/cheesy_data/tba2.json");
+        // let response = await fetch("../assets/cheesy_data/tba3.json");
+        let responseJSON = await response.json(); //testData2
+        var sorted = sortMatchesByTime(responseJSON);
+        return sorted;
     } catch(error) {
         console.error("Error while getting TBA data from getTeamEventMatches: " + error);
     }
@@ -48,8 +50,17 @@ export async function getTeamEventStatus(teamKey, eventKey) {
     try {
         let response = await fetch("https://www.thebluealliance.com/api/v3/team/"+teamKey+"/event/"
                 +eventKey+"/status?X-TBA-Auth-Key="+tbaAuth);
+        // let response = await fetch("../assets/cheesy_data/tba.json");
+
         let responseJSON = await response.json();
-        return responseJSON;
+        // console.log("STATUSSSSSSSSS")
+        // console.log(responseJSON)
+        
+        return ({
+            "rank": (await responseJSON)["qual"]["ranking"]["rank"],
+            "recordString": (await responseJSON)["qual"]["ranking"]["record"]["wins"] + "-" + (await responseJSON)["qual"]["ranking"]["record"]["losses"] + "-" + (await responseJSON)["qual"]["ranking"]["record"]["ties"],
+            "averageRP": (await responseJSON)["qual"]["ranking"]["sort_orders"][0]
+        });
     } catch(error) {
         console.error("Error while getting TBA data from getTeamEventStatus: " + error);
     }
@@ -60,32 +71,29 @@ export async function getTeamEventStatus(teamKey, eventKey) {
  * @param {Dictionary} input the dictionary to sort
  * @returns the sorted dictionary
  */
-function sortMatchesByTime(input) {
+export async function sortMatchesByTime(input) {
     let receivedInput = input;
     console.log("awaited input: " + input);
     console.log("recvd input from sorter " + receivedInput);
-    var qm, ef, qf, sf, f;
-    var all = [qm, ef, qf, sf, f];
-    for(var i = 0; i < all.length; i++) {
-        all[i] = [];
-    }
-    console.log("all empty from sorter: " + all);
+    let qm, ef, qf, sf, f;
+    qm = []; ef = []; qf = []; sf = []; f = [];
+    let all = [qm, ef, qf, sf, f];
     for(let i = 0; i < receivedInput.length; i++) {
         switch(receivedInput[i]["comp_level"]) {
             case "qm":
-                all[0].push(receivedInput[i]);
+                qm.push(receivedInput[i]);
                 break;
             case "ef":
-                all[1].push(receivedInput[i]);
+                ef.push(receivedInput[i]);
                 break;
             case "qf":
-                all[2].push(receivedInput[i]);
+                qf.push(receivedInput[i]);
                 break;
             case "sf":
-                all[3].push(receivedInput[i]);
+                sf.push(receivedInput[i]);
                 break;
             case "f":
-                all[4].push(receivedInput[i]);
+                f.push(receivedInput[i]);
                 break;
             default:
                 qf.push(receivedInput[i]);
@@ -93,13 +101,14 @@ function sortMatchesByTime(input) {
                 break;
         }
     }
-    console.log("all unsorted from sorter: " + all);
-    // for(var matchType in all) {
-        Object.keys(all)
-            .map(value => value)
-            .sort((a, b) => a["predicted_time"] - b["predicted_time"]);
-    // }
-    console.log("all sorted from sorter: " + all);
+    console.log("all unsorted from sorter: ");
+    console.log(all)
+    for(let i = 0; i < all.length; i++) {
+        console.log(all[i])
+        all[i].sort((a, b) => a["predicted_time"] - b["predicted_time"]);
+    }
+    console.log("all sorted from sorter: ");
+    console.log(all)
     return all;
 }
 
@@ -108,16 +117,17 @@ function sortMatchesByTime(input) {
  * @param {String} eventKey the TBA event key for the request URL
  * @returns the TBA match JSON array of the current match
  */
-export function getCurrentEventMatch(eventKey) {
+export async function getCurrentEventMatch(eventKey) {
+    console.log("GETCURRENTMATCH CALLED!!")
     try {
-        let allEventMatches = getEventMatches(eventKey);
+        let allEventMatches = await getEventMatches(eventKey);
         console.log(allEventMatches);
         var currentMatch;
         for(let i = 0; i < allEventMatches.length; i++) {
             if(allEventMatches[i].length !== 0) {
                 for(let ii = 0; ii < allEventMatches[i].length; ii++) {
-                    if(allEventMatches[i][ii]["winning_alliance"] != ""
-                            || ii == allEventMatches[i].length+1) {
+                    if(allEventMatches[i][ii]["winning_alliance"] !== ""
+                            || ii === allEventMatches[i].length+1) {
                         currentMatch = allEventMatches[i][ii];
                     }
                 }
@@ -135,22 +145,40 @@ export function getCurrentEventMatch(eventKey) {
  * @param {String} eventKey the TBA event key for the request URL
  * @returns the next match that a team will play for a given event
  */
-export function getNextTeamMatch(teamKey, eventKey) {
-    var allTeamMatches = getTeamEventMatches(teamKey, eventKey);
-    var nextMatch;
-    for(var matches in allTeamMatches) {
-        for(var match in matches.reverse()) {
-            if(match[5] > new Date().getUTCMinutes()) {
+export async function getNextTeamMatch(teamKey, eventKey) {
+    let allTeamMatches = await getTeamEventMatches(teamKey, eventKey);
+    console.log(allTeamMatches)
+    let nextMatch;
+    for(let i = 0; i < allTeamMatches.length; i++) {
+        let matchGroup = allTeamMatches[i].reverse()
+        for(let j = 0; j < matchGroup.length; j++) {
+            let match = matchGroup[j]
+            console.log(match["predicted_time"])
+            console.log(new Date().getTime() / 1000)
+            if(match["predicted_time"] >= new Date().getTime() / 1000) {
                 nextMatch = match;
             }
         }
     }
-    if(nextMatch.length === 0) {
-        for(matches in allTeamMatches) {
-            if(matches.length !== 0) {
-                nextMatch = matches.at(-1);
-            }
+    if(typeof nextMatch === "undefined" || nextMatch === null) {
+        if(allTeamMatches.length !== 0) {
+            console.log(allTeamMatches)
+            nextMatch = allTeamMatches[0][0];
         }
     }
-    return nextMatch;
+
+    let custom = {
+        "matchNumber": nextMatch["match_number"],
+        "allianceColor": nextMatch["alliances"]["red"]["team_keys"].includes(teamKey) ? "Red" : "Blue",
+        "allianceStation": (nextMatch["alliances"]["red"]["team_keys"].includes(teamKey) ? "Red " : "Blue ") + (nextMatch["alliances"]["red"]["team_keys"].indexOf(teamKey) !== null ? nextMatch["alliances"]["red"]["team_keys"].indexOf(teamKey) + 1 : nextMatch["alliances"]["blue"]["team_keys"].indexOf(teamKey) + 1), // which station??
+        "bumperClass": nextMatch["alliances"]["red"]["team_keys"].includes(teamKey) ? "redbg" : "bluebg",
+        "predictedTime": nextMatch["predicted_time"]
+    }
+    return custom;
+}
+
+export async function getEventRanks(eventKey) {
+    let response = await fetch("https://www.thebluealliance.com/api/v3/event/" + eventKey + "/teams/statuses?X-TBA-Auth-Key=" + tbaAuth)
+    let json = await response.json();
+    return (await json);
 }

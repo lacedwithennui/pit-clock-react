@@ -1,9 +1,6 @@
 export default function Nextpanel({teamKey, currentMatch, nextMatch}) {
-    console.log("SB Current Match " + currentMatch);
     let matchNum = currentMatch["match_number"];
     let bumperClass = nextMatch["bumperClass"]
-    console.log(matchNum);
-    console.log(nextMatch)
     return (
         <>
             <div id="nextpanel">

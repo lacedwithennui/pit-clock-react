@@ -17,6 +17,7 @@ $light-red: #cf585c;
     flex-grow: 1;
     justify-content: space-between;
     width: 100%;
+    padding: 2vw;
 }
 
 p, h1, h2, h3, h4, h5, td, th  {
@@ -37,13 +38,19 @@ body {
     width: 100vw;
     display: flex;
     margin: 0;
-    background-color: $bg-color-dark;
-    color: $text-color;
+}
+
+p {
+    margin: 0 0 2vh 0;
+}
+
+#currentTime {
+    text-align: center;
 }
 
 .nextpanel {
     font-size: 1.6em;
-    margin: 0;
+    margin: 0 0 2vh 0;
     overflow: auto
     /* width: 100%; */
 }
@@ -71,11 +78,6 @@ h1 {
     margin: 1em 0;
 }
 
-.rankings {
-    margin: 0.3em 0;
-    font-size: 0.8em;
-}
-
 #kettering td, #kettering th {
     font-size: 1em;
     padding: 0.3vw;
@@ -97,10 +99,6 @@ td.matchName {
     display: flex;
     justify-content: center;
     position: relative;
-    /* float: left; */
-    /* margin-left: 4.55vw; */
-    padding-bottom: 2vw;
-    /* padding: 0 16.75%; */
 }
 
 #centerContent {
@@ -124,9 +122,7 @@ td.matchName {
     margin: 2vh 0 0 0;
     clear: left; */
     display: flex;
-    padding-right: 0.5vw;
-    width: 18.19vw;
-    margin: 2vh 0 0 0;
+    width: 20vw;
     flex-direction: column;
 }
 
@@ -155,17 +151,17 @@ td.matchName {
 #sidebar {
     /* position: relative;
     display: inline-block; */
-    width: 18.19vw;
-    padding-left: 0.5vw;
+    width: 20vw;
 }
 
 #bumper {
     font-weight: bold;
     padding: 1.5vw;
     color: white;
-    width: max-content;
-    font-size: 6vw;
-    margin: 0;
+    width: max;
+    font-size: 5em;
+    margin: 0 0 2vh 0;
+    text-align: center;
 }
 
 .redbg {
@@ -201,15 +197,13 @@ p.copy {
     margin-bottom: 0;
 }
 
-#statuspanel p {
-    font-size: 1.5vw;
+#sidebar p {
+    font-size: 1.6em;
 }
 
-#statuspanel {
-    position: relative;
-    /* display: block; */
-    /* float: left; */
-    /* clear: right; */
+.rankings {
+    margin: 0.3em 0;
+    font-size: 1em !important;
 }
 
 td.rank {

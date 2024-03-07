@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import { getEventRanks, getTeamEventMatches } from "./tbaAPI";
 import { compLevelToHumanReadable } from "./util";
 
 export default function VirtualKettering({teamKey, allMatches, allStatuses}) {
@@ -56,7 +54,6 @@ function makeTD(ourTeamKey, match) {
         tds.push(<td className={"tdRed " + (teamKey === ourTeamKey ? "redalliance" : "")}>{teamKey.replace("frc", "")}</td>)
     }
     let ogDate = new Date(match["predicted_time"] * 1000);
-    console.log(navigator.language)
     let dayString = new Intl.DateTimeFormat(navigator.language, {weekday: "short"}).format(ogDate)
     let timeString = ogDate.toLocaleTimeString(navigator.language);
     timeString = dayString + " " + timeString.split(":")[0] + ":" + timeString.split(":")[1] + " " + timeString.split(" ")[1];
@@ -66,16 +63,8 @@ function makeTD(ourTeamKey, match) {
 
 function makeRankTD(match, statuses) {
     let tds = [];
-    console.log("STATUSES HERE!!!!!")
-    console.log("STATUSES HERE!!!!!")
-    console.log("STATUSES HERE!!!!!")
-    console.log("STATUSES HERE!!!!!")
-    console.log("STATUSES HERE!!!!!")
-    console.log("STATUSES HERE!!!!!")
-    console.log(statuses)
     for(let i = 0; i < 3; i++) {
         let teamKey = match["alliances"]["blue"]["team_keys"][i];
-        console.log(statuses[teamKey])
         tds.push(<td class='rank'>Rank {statuses[teamKey]["qual"]["ranking"]["rank"]}</td>);
     }
     for(let i = 0; i < 3; i++) {

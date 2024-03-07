@@ -50,11 +50,7 @@ export async function getTeamEventStatus(teamKey, eventKey) {
     try {
         let response = await fetch("https://www.thebluealliance.com/api/v3/team/"+teamKey+"/event/"
                 +eventKey+"/status?X-TBA-Auth-Key="+tbaAuth);
-        // let response = await fetch("../assets/cheesy_data/tba.json");
-
         let responseJSON = await response.json();
-        // console.log("STATUSSSSSSSSS")
-        // console.log(responseJSON)
         
         return ({
             "rank": (await responseJSON)["qual"]["ranking"]["rank"],
@@ -73,8 +69,6 @@ export async function getTeamEventStatus(teamKey, eventKey) {
  */
 export async function sortMatchesByTime(input) {
     let receivedInput = input;
-    console.log("awaited input: " + input);
-    console.log("recvd input from sorter " + receivedInput);
     let qm, ef, qf, sf, f;
     qm = []; ef = []; qf = []; sf = []; f = [];
     let all = [qm, ef, qf, sf, f];
@@ -97,18 +91,13 @@ export async function sortMatchesByTime(input) {
                 break;
             default:
                 qf.push(receivedInput[i]);
-                console.log("match type not found for " + receivedInput[i]);
+                console.warn("Match type not found for " + receivedInput[i]);
                 break;
         }
     }
-    console.log("all unsorted from sorter: ");
-    console.log(all)
     for(let i = 0; i < all.length; i++) {
-        console.log(all[i])
         all[i].sort((a, b) => a["predicted_time"] - b["predicted_time"]);
     }
-    console.log("all sorted from sorter: ");
-    console.log(all)
     return all;
 }
 
@@ -118,10 +107,8 @@ export async function sortMatchesByTime(input) {
  * @returns the TBA match JSON array of the current match
  */
 export async function getCurrentEventMatch(eventKey) {
-    console.log("GETCURRENTMATCH CALLED!!")
     try {
         let allEventMatches = await getEventMatches(eventKey);
-        console.log(allEventMatches);
         var currentMatch;
         for(let i = 0; i < allEventMatches.length; i++) {
             if(allEventMatches[i].length !== 0) {
@@ -133,10 +120,9 @@ export async function getCurrentEventMatch(eventKey) {
                 }
             }
         }
-        console.log("getEM match: " + currentMatch);
         return currentMatch;
     } catch(error) {
-        console.log("Error getting current event match: " + error);
+        console.warn("Error getting current event match: " + error);
     }
 }
 
@@ -147,14 +133,11 @@ export async function getCurrentEventMatch(eventKey) {
  */
 export async function getNextTeamMatch(teamKey, eventKey) {
     let allTeamMatches = await getTeamEventMatches(teamKey, eventKey);
-    console.log(allTeamMatches)
     let nextMatch;
     for(let i = 0; i < allTeamMatches.length; i++) {
         let matchGroup = allTeamMatches[i].reverse()
         for(let j = 0; j < matchGroup.length; j++) {
             let match = matchGroup[j]
-            console.log(match["predicted_time"])
-            console.log(new Date().getTime() / 1000)
             if(match["predicted_time"] >= new Date().getTime() / 1000) {
                 nextMatch = match;
             }
@@ -162,7 +145,6 @@ export async function getNextTeamMatch(teamKey, eventKey) {
     }
     if(typeof nextMatch === "undefined" || nextMatch === null) {
         if(allTeamMatches.length !== 0) {
-            console.log(allTeamMatches)
             nextMatch = allTeamMatches[0][0];
         }
     }

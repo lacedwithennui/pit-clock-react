@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./assets/stylesheets/shared.scss";
 import Nextpanel from "./components/Nextpanel";
 import Sidebar from "./components/Sidebar";
-import Counter from "./components/Counter";
+import Counter, {TimeClock} from "./components/Counter";
 import VirtualKettering from "./components/VirtualKettering";
 import { getCurrentEventMatch, getEventRanks, getNextTeamMatch, getTeamEventMatches, getTeamEventStatus } from "./components/tbaAPI";
 
@@ -40,6 +40,7 @@ function App() {
       <div id="centercontent">
         <Counter teamKey={teamKey} eventKey={eventKey} nextMatch={nextTeamMatch} />
         <VirtualKettering teamKey={teamKey} eventKey={eventKey} allMatches={allMatches} allStatuses={allStatuses} />
+        <TimeClock />
       </div>
       <Nextpanel teamKey={teamKey} eventKey={eventKey} currentMatch={currentEventMatch} nextMatch={nextTeamMatch} />
     </div>

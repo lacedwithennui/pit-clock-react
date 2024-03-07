@@ -44,7 +44,6 @@ function RankList({eventKey, allStatuses}) {
         allStatuses[key]["teamKey"] = key
         statusArray.push(allStatuses[key])
     });
-    console.log(allStatuses)
     statusArray.sort((a, b) => {
         return a["qual"]["ranking"]["rank"] - b["qual"]["ranking"]["rank"];
     })

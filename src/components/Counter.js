@@ -20,12 +20,19 @@ export default function Counter({nextMatch}) {
     )
 }
 
+export function TimeClock() {
+    return (
+        <h1 id="currentTime">
+            0:00 AM
+        </h1>
+    )
+}
+
 export function updateTimer(nextMatchTime) {
     if(isNaN(nextMatchTime)) {
         nextMatchTime = 0
     }
     let distance = nextMatchTime * 1000 - (new Date().getTime());
-    console.log(distance)
     let hours, minutes, seconds;
     if(distance < 0) {
         hours = 0;
@@ -39,5 +46,6 @@ export function updateTimer(nextMatchTime) {
     }
 
     document.getElementById("counter").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
-    // document.getElementById("currentTime").innerHTML = "Time: " + new Date().toLocaleTimeString();
+    let timeString = new Date().toLocaleTimeString()
+    document.getElementById("currentTime").innerHTML = timeString.split(":")[0] + ":" + timeString.split(":")[1] + " " + timeString.split(" ")[1];
 }

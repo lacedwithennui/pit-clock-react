@@ -38,19 +38,29 @@ function StatusPanel({teamKey, eventKey, status}) {
 }
 
 function RankList({eventKey, allStatuses}) {
-    // for (let i = 1; i < allStatuses + 1; i++) {
-    //     if($i == 1 || $i == intval(count($ranks_sorted)/2)+2) {
-    //         echo "<div class='column'>";
-    //     }
-    //     echo "<p class='rankings'>" . "Rank " . $ranks_sorted[$i]["qual"]["ranking"]["rank"] . ": " . str_replace("frc", "", $ranks_sorted[$i]["qual"]["ranking"]["team_key"]) . "</p>";
-    //     if($i == intval(count($ranks_sorted)/2)+1 || $i == count($ranks_sorted)) {
-    //         echo "</div>";
-    //     }
-    // }
+    let column = [[], []];
+    let statusArray = [];
+    Object.keys(allStatuses).forEach((key) => {
+        allStatuses[key]["teamKey"] = key
+        statusArray.push(allStatuses[key])
+    });
+    console.log(allStatuses)
+    statusArray.sort((a, b) => {
+        return a["qual"]["ranking"]["rank"] - b["qual"]["ranking"]["rank"];
+    })
+    for (let i = 0; i < statusArray.length; i++) {
+        if(i === 0 || i < statusArray.length / 2) {
+            column[0].push(<p class='rankings'>Rank {statusArray[i]["qual"]["ranking"]["rank"]}: {statusArray[i]["teamKey"].replace("frc", "")}</p>);
+        }
+        else {
+            column[1].push(<p class='rankings'>Rank {statusArray[i]["qual"]["ranking"]["rank"]}: {statusArray[i]["teamKey"].replace("frc", "")}</p>);
+        }
+    }
 
     return (
-        <>
-            
-        </>
+        <div id="matches">
+            <div className="column">{column[0]}</div>
+            <div className="column">{column[1]}</div>
+        </div>
     )
 }

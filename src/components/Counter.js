@@ -7,6 +7,7 @@ export default function Counter({nextMatch}) {
             setNextMatchTime(await nextMatch["predictedTime"])
         }
         set()
+        updateTimer(nextMatchTime);
         const counterUpdater = setInterval(() => updateTimer(nextMatchTime), 1000);
         return () => clearInterval(counterUpdater)
     }, [nextMatch["predictedTime"] == nextMatchTime]);

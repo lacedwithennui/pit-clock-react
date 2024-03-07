@@ -1,5 +1,3 @@
-import '../assets/stylesheets/shared.css';
-
 export default function Nextpanel({teamKey, currentMatch, nextMatch}) {
     console.log("SB Current Match " + currentMatch);
     let matchNum = currentMatch["match_number"];

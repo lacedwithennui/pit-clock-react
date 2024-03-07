@@ -23,7 +23,7 @@ export default function VirtualKettering({teamKey, allMatches, allStatuses}) {
                             return matchGroup.map((match) => (
                                 <>
                                     <tr>
-                                        <td>{compLevelToHumanReadable(match["comp_level"]) + " " + match["match_number"]}</td>
+                                        <td>{compLevelToHumanReadable(match["comp_level"]) + " " + (match["set_number"] === 1 ? match["match_number"] : match["set_number"])}</td>
                                         {
                                             makeTD(teamKey, match)
                                         }

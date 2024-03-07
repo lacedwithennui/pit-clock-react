@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// import "./assets/stylesheets/shared.scss";
 import "./assets/stylesheets/shared.scss";
 import Nextpanel from "./components/Nextpanel";
 import Sidebar from "./components/Sidebar";
@@ -28,7 +27,9 @@ function App() {
         setAllMatches(await getTeamEventMatches(teamKey, eventKey));
       }
       set();
-    }, [])
+      const refreshInterval = setInterval(() => set(), 60000);
+      return () => clearInterval(refreshInterval);
+    }, []);
     
 
     let teamKey = "frc5587";

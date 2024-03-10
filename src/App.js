@@ -34,8 +34,8 @@ function App() {
     }, []);
     
 
-    let teamKey = "frc696";
-    let eventKey = "2024cave"
+    let teamKey = "frc5587";
+    let eventKey = "2024vaash"
   return (
     <div className="App">
         <Sidebar teamKey={teamKey} eventKey={eventKey} status={teamStatus} allStatuses={allStatuses} />

@@ -4,7 +4,7 @@ import Nextpanel from "./components/Nextpanel";
 import Sidebar from "./components/Sidebar";
 import Counter, {TimeClock} from "./components/Counter";
 import VirtualKettering from "./components/VirtualKettering";
-import { getCurrentEventMatch, getEventRanks, getNextTeamMatch, getTeamEventMatches, getTeamEventStatus } from "./components/tbaAPI";
+import { getCurrentEventMatch, getEventRanks, getNextTeamMatch, getTeamEventMatches, getTeamEventStatus, getEventOPRs } from "./components/tbaAPI";
 
 function App() {
     // const [teamKey, setTeamKey] = useState("frc5587");
@@ -18,6 +18,7 @@ function App() {
     const [allStatuses, setAllStatuses] = useState([]);
     const [teamStatus, setTeamStatus] = useState({});
     const [allMatches, setAllMatches] = useState([]);
+    const [allOPRs, setAllOPRs] = useState({});
     useEffect(() => {
       async function set() {
         setNextTeamMatch(await getNextTeamMatch(teamKey, eventKey))
@@ -25,6 +26,7 @@ function App() {
         setAllStatuses(await getEventRanks(eventKey));
         setTeamStatus(await getTeamEventStatus(teamKey, eventKey));
         setAllMatches(await getTeamEventMatches(teamKey, eventKey));
+        setAllOPRs(await getEventOPRs(eventKey));
       }
       set();
       const refreshInterval = setInterval(() => set(), 60000);
@@ -32,8 +34,8 @@ function App() {
     }, []);
     
 
-    let teamKey = "frc5587";
-    let eventKey = "2024vaash"
+    let teamKey = "frc696";
+    let eventKey = "2024cave"
   return (
     <div className="App">
         <Sidebar teamKey={teamKey} eventKey={eventKey} status={teamStatus} allStatuses={allStatuses} />
@@ -42,7 +44,7 @@ function App() {
         <VirtualKettering teamKey={teamKey} eventKey={eventKey} allMatches={allMatches} allStatuses={allStatuses} />
         <TimeClock />
       </div>
-      <Nextpanel teamKey={teamKey} eventKey={eventKey} currentMatch={currentEventMatch} nextMatch={nextTeamMatch} />
+      <Nextpanel teamKey={teamKey} eventKey={eventKey} currentMatch={currentEventMatch} nextMatch={nextTeamMatch} allStatuses={allStatuses} oprs={allOPRs} />
     </div>
   );
 }

@@ -152,9 +152,12 @@ export async function getNextTeamMatch(teamKey, eventKey) {
     let custom = {
         "matchNumber": nextMatch["match_number"],
         "allianceColor": nextMatch["alliances"]["red"]["team_keys"].includes(teamKey) ? "Red" : "Blue",
-        "allianceStation": (nextMatch["alliances"]["red"]["team_keys"].includes(teamKey) ? "Red " : "Blue ") + (nextMatch["alliances"]["red"]["team_keys"].indexOf(teamKey) !== null ? nextMatch["alliances"]["red"]["team_keys"].indexOf(teamKey) + 1 : nextMatch["alliances"]["blue"]["team_keys"].indexOf(teamKey) + 1), // which station??
+        "allianceStation": (nextMatch["alliances"]["red"]["team_keys"].includes(teamKey) ? "Red " : "Blue ") + (nextMatch["alliances"]["red"]["team_keys"].indexOf(teamKey) !== -1 ? nextMatch["alliances"]["red"]["team_keys"].indexOf(teamKey) + 1 : nextMatch["alliances"]["blue"]["team_keys"].indexOf(teamKey) + 1), // which station??
         "bumperClass": nextMatch["alliances"]["red"]["team_keys"].includes(teamKey) ? "redbg" : "bluebg",
-        "predictedTime": nextMatch["predicted_time"]
+        "compLevel": nextMatch["comp_level"],
+        "predictedTime": nextMatch["predicted_time"],
+        "blueAlliance": nextMatch["alliances"]["blue"],
+        "redAlliance": nextMatch["alliances"]["red"]
     }
     return custom;
 }
@@ -162,5 +165,12 @@ export async function getNextTeamMatch(teamKey, eventKey) {
 export async function getEventRanks(eventKey) {
     let response = await fetch("https://www.thebluealliance.com/api/v3/event/" + eventKey + "/teams/statuses?X-TBA-Auth-Key=" + tbaAuth)
     let json = await response.json();
+    return (await json);
+}
+
+export async function getEventOPRs(eventKey) {
+    let response = await fetch("https://www.thebluealliance.com/api/v3/event/" + eventKey + "/oprs?X-TBA-Auth-Key=" + tbaAuth)
+    let json = await response.json();
+    console.log(json)
     return (await json);
 }

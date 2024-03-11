@@ -6,6 +6,11 @@ $logo-red: #be2026;
 $light-blue: #3d50af;
 $light-red: #cf585c;
 
+// Comment out the lines below if you want the development error overlay.
+iframe {
+    display: none;
+}
+
 #root {
     display: flex;
     width: 100%;

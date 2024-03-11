@@ -48,7 +48,7 @@ function App() {
                 <p class='copy'><a href='https://github.com/lacedwithennui/pit-clock'>github.com/lacedwithennui/pit-clock</a></p>
                 <p class='copy'>Copyright Hazel Belmont, FRC 5587 Titan Robotics.</p>
             </div>
-            <img src={logo} />
+            <img src={logo} alt="FRC 5587 Titan Robotics Logo" />
         </div>
     </>
   );

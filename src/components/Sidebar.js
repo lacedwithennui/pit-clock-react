@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { getTeamEventStatus } from "./tbaAPI";
 
 export default function Sidebar({teamKey, eventKey, status, allStatuses}) {
     return (
@@ -10,7 +9,7 @@ export default function Sidebar({teamKey, eventKey, status, allStatuses}) {
     )
 }
 
-function StatusPanel({teamKey, eventKey, status}) {
+function StatusPanel({teamKey, status}) {
     let [rank, setRank] = useState(0);
     let [recordString, setRecordString] = useState("");
     let [avgRP, setAvgRP] = useState(0.0);
@@ -31,7 +30,7 @@ function StatusPanel({teamKey, eventKey, status}) {
     )
 }
 
-function RankList({eventKey, allStatuses}) {
+function RankList({allStatuses}) {
     let column = [[], []];
     let statusArray = [];
     Object.keys(allStatuses).forEach((key) => {

@@ -16,15 +16,11 @@ Make a new json file called tba-authkey.json in the /src/assets/tokens folder th
 ```
 where tba_apiKey is your APIv3 key from The Blue Alliance.
 
-# COMING SOON! How to use the input screen: #
-## Disclaimer ##
-This functionality has not yet been added to the react version of the app. For now, for public use, you must go into App.json in the
-/src folder and change the teamKey and eventKey variables manually.
-
-
-Put in your team number or team key (eg. 5587 or frc5587), and your event key. Your event key is part of the TBA link for your event (eg. 2023vaale). If the event has already started, you can check "Use Latest Event" and the program will find the event key for you. Note that this checkbox will not work if you have qualified for a future event that does not have a match schedule released yet. For example, if you are GaCo 1629, who qualified for the 2023 FIRST Championship by winning the Chairman's Award last year, you must manually put in an event key because your newest event will be the 2023 FIRST Championship.
+# How to use the input screen: #
+Put in your team number or team key (eg. 5587 or frc5587), and your event key. Your event key is part of the TBA link for your event (eg. 2024vaash). You can always come back to the input screen if you need to by clicking the link on the right-hand side of the main 
+pit clock screen.
 
 # How to set up a local instance: #
-Install node.js and run `npm i -g react-scripts` in the terminal. After that, clone this project and navigate to the folder in a code
-editor of your choice. Open App.js and change the teamKey and eventKey variables to `frc(yourTeamNumberHere)` and `yourEventKeyHere`
-(ex. `frc5587` and `2024vaash`). Then, in the terminal, navigate to the project's root folder and run `npm run start`.
+Install node.js, clone this project and navigate to the folder in a code editor of your choice. Then you can simply run `npm i`, 
+`npm run build`, and `serve -s build -l 3000` to start the local instance. You can open the page in any browser by navigating to 
+`http://localhost:3000`.

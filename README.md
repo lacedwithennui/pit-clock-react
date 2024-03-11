@@ -23,4 +23,5 @@ pit clock screen.
 # How to set up a local instance: #
 Install node.js, clone this project and navigate to the folder in a code editor of your choice. Then you can simply run `npm i`, 
 `npm run build`, and `serve -s build -l 3000` to start the local instance. You can open the page in any browser by navigating to 
-`http://localhost:3000`.
+`http://localhost:3000`. I strongly advise against using a dev server with `npm run start` because of the error overlay that will 
+show up when states are unset (before rendering finishes) unless you feel like going through the trouble to turn it off.

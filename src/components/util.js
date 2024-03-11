@@ -41,7 +41,6 @@ export function teamScoreLookup(teamKey, allStatuses) {
 }
 
 export function teamOPRLookup(teamKey, oprs) {
-    console.log(oprs)
     return oprs["oprs"][teamKey];
 }
 
@@ -62,7 +61,5 @@ export function getWinChances(ourAlliance, avgRedRank, avgBlueRank, avgRedScore,
     let redChancesOPR = (redOPRSum / (redOPRSum + blueOPRSum)) * 100;
     let blueChances = (blueChancesRank * 0.1) + (blueChancesScore * 0.2) + (blueChancesOPR * 0.7)
     let redChances = (redChancesRank * 0.1) + (redChancesScore * 0.2) + (redChancesOPR * 0.7)
-    console.log("Our Chances Rank: " + (ourAlliance === "Blue" ? blueChancesRank : redChancesRank))
-    console.log("Our Chances Score: " + (ourAlliance === "Blue" ? blueChancesScore : redChancesScore))
     return parseFloat(ourAlliance === "Blue" ? blueChances : redChances).toFixed(2);
 }

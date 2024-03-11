@@ -1,0 +1,48 @@
+fieldset {
+	width: 410px;
+}
+
+legend {
+	background-color: #191919;
+	color: #EAEAEA;
+	border: 1px solid #161616;
+	border-radius: 3px;
+	padding: 7px;
+}
+
+input, .inputButtons {
+	background-color: #191919;
+	color: #EAEAEA;
+	border: 2px solid #161616;
+	border-radius: 3px;
+}
+
+input:focus {
+	background-color: #191919;
+}
+
+input[type="text"] {
+	height: 13pt;
+	/*padding: 2px;*/
+}
+
+.inputButtons {
+	padding: 7px;
+	border: 2px solid #161616;
+	border-radius: 3px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+p {
+    font-size: 13pt;
+}
+
+#instructions {
+    position: fixed;
+    float: right;
+    display: block;
+    bottom: 0;
+    left: 0;
+    padding: 8px;
+    margin: 0;
+}

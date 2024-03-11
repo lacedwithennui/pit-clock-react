@@ -151,6 +151,7 @@ export async function getNextTeamMatch(teamKey, eventKey) {
 
     let custom = {
         "matchNumber": nextMatch["match_number"],
+        "setNumber": nextMatch["set_number"],
         "allianceColor": nextMatch["alliances"]["red"]["team_keys"].includes(teamKey) ? "Red" : "Blue",
         "allianceStation": (nextMatch["alliances"]["red"]["team_keys"].includes(teamKey) ? "Red " : "Blue ") + (nextMatch["alliances"]["red"]["team_keys"].indexOf(teamKey) !== -1 ? nextMatch["alliances"]["red"]["team_keys"].indexOf(teamKey) + 1 : nextMatch["alliances"]["blue"]["team_keys"].indexOf(teamKey) + 1), // which station??
         "bumperClass": nextMatch["alliances"]["red"]["team_keys"].includes(teamKey) ? "redbg" : "bluebg",
@@ -171,6 +172,5 @@ export async function getEventRanks(eventKey) {
 export async function getEventOPRs(eventKey) {
     let response = await fetch("https://www.thebluealliance.com/api/v3/event/" + eventKey + "/oprs?X-TBA-Auth-Key=" + tbaAuth)
     let json = await response.json();
-    console.log(json)
     return (await json);
 }

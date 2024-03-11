@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { compLevelToShortHumanReadable, getWinChances, simpleAvg, teamRankLookup, teamScoreLookup, teamOPRLookup } from "./util";
+import EventForm from "./EventForm";
 
-export default function Nextpanel({teamKey, currentMatch, nextMatch, allStatuses, oprs}) {
-    let matchNum = currentMatch["match_number"];
+export default function Nextpanel({teamKey, currentMatch, nextMatch, allStatuses, oprs, setTeamKey, setEventKey, setRefreshInterval}) {
+    let matchNum = (currentMatch["set_number"] === 1 ? currentMatch["match_number"] : currentMatch["set_number"]);
     let bumperClass = nextMatch["bumperClass"];
     const [rankRatioJSX, setRankRatioJSX] = useState(<></>);
     const [scoreRatioJSX, setScoreRatioJSX] = useState(<></>);
@@ -69,15 +70,18 @@ export default function Nextpanel({teamKey, currentMatch, nextMatch, allStatuses
     }, [nextMatch, allStatuses, oprs])
     return (
         <>
-            <div id="nextpanel">
-                <p class='nextpanel'>Current Match In Play: {compLevelToShortHumanReadable(currentMatch["comp_level"])} {matchNum}</p>
-                <p class='nextpanel'>Next Match: {compLevelToShortHumanReadable(nextMatch["compLevel"])} {nextMatch["matchNumber"]}</p>
-                <p className="nextpanel">Station: {nextMatch["allianceStation"]}</p>
-                <p id="bumper" className={bumperClass}>{teamKey.replace("frc", "")}</p>
-                {oprSumJSX}
-                {rankRatioJSX}
-                {scoreRatioJSX}
-                <p>Win Chances: {winChances}%</p>
+            <div>
+                <div id="nextpanel">
+                    <p class='nextpanel'>Current Match In Play: {compLevelToShortHumanReadable(currentMatch["comp_level"])} {matchNum}</p>
+                    <p class='nextpanel'>Next Match: {compLevelToShortHumanReadable(nextMatch["compLevel"])} {(nextMatch["setNumber"] === 1 ? nextMatch["matchNumber"] : nextMatch["setNumber"])}</p>
+                    <p className="nextpanel">Station: {nextMatch["allianceStation"]}</p>
+                    <p id="bumper" className={bumperClass}>{teamKey.replace("frc", "")}</p>
+                    {oprSumJSX}
+                    {rankRatioJSX}
+                    {scoreRatioJSX}
+                    <p>Win Chances: {winChances}%</p>
+                </div>
+                <EventForm setTeamKey={setTeamKey} setEventKey={setEventKey} setRefreshInterval={setRefreshInterval} />
             </div>
         </>
     );

@@ -10,7 +10,7 @@ export default function Counter({nextMatch}) {
         updateTimer(nextMatchTime);
         const counterUpdater = setInterval(() => updateTimer(nextMatchTime), 1000);
         return () => clearInterval(counterUpdater)
-    }, [nextMatch["predictedTime"] === nextMatchTime]);
+    }, [nextMatch, nextMatchTime]);
     return (
         <div id="counterDiv">
             <h1 id="counter">

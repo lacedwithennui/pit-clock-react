@@ -98,8 +98,8 @@ export function simpleAvg(numbers) {
  *          Average rank: 10%. Average alliance score: 20%. OPR: 70%.
  */
 export function getWinChances(ourAlliance, avgRedRank, avgBlueRank, avgRedScore, avgBlueScore, redOPRSum, blueOPRSum, totalTeams) {
-    let blueChancesRank = ((((totalTeams - avgBlueRank) / totalTeams) - (totalTeams - avgRedRank) / totalTeams) + 0.5) * 100;
-    let redChancesRank = (((totalTeams - avgRedRank) / totalTeams) - ((totalTeams - avgBlueRank) / totalTeams) + 0.5) * 100;
+    let blueChancesRank = ((((((totalTeams - avgBlueRank) / totalTeams) - (totalTeams - avgRedRank) / totalTeams)) * 0.5) + 0.5) * 100;
+    let redChancesRank = (((((totalTeams - avgRedRank) / totalTeams) - ((totalTeams - avgBlueRank) / totalTeams)) * 0.5) + 0.5) * 100;
     let blueChancesScore = (avgBlueScore / (avgRedScore + avgBlueScore)) * 100;
     let redChancesScore = (avgRedScore / (avgRedScore + avgBlueScore)) * 100;
     let blueChancesOPR = (blueOPRSum / (redOPRSum + blueOPRSum)) * 100;;

@@ -10,7 +10,7 @@ export async function getEventMatches(eventKey) {
     try {
         let response = await fetch("https://www.thebluealliance.com/api/v3/event/"
                 +eventKey+"/matches/simple?X-TBA-Auth-Key="+tbaAuth);
-        let json = await response.json(); //testData
+        let json = await response.json();
         let sorted = sortMatchesByTime(json);
         return sorted;
     } catch(error) {
@@ -29,9 +29,7 @@ export async function getTeamEventMatches(teamKey, eventKey) {
     try {
         let response = await fetch("https://www.thebluealliance.com/api/v3/team/"+teamKey+"/event/"
                 +eventKey+"/matches/simple?X-TBA-Auth-Key="+tbaAuth);
-        // let response = await fetch("../assets/cheesy_data/tba2.json");
-        // let response = await fetch("../assets/cheesy_data/tba3.json");
-        let responseJSON = await response.json(); //testData2
+        let responseJSON = await response.json();
         var sorted = sortMatchesByTime(responseJSON);
         return sorted;
     } catch(error) {
@@ -90,7 +88,7 @@ export async function sortMatchesByTime(input) {
                 f.push(receivedInput[i]);
                 break;
             default:
-                qf.push(receivedInput[i]);
+                qm.push(receivedInput[i]);
                 console.warn("Match type not found for " + receivedInput[i]);
                 break;
         }
@@ -163,12 +161,20 @@ export async function getNextTeamMatch(teamKey, eventKey) {
     return custom;
 }
 
+/**
+ * @param {string} eventKey 
+ * @returns The ranks object from TBA with team keys as keys.
+ */
 export async function getEventRanks(eventKey) {
     let response = await fetch("https://www.thebluealliance.com/api/v3/event/" + eventKey + "/teams/statuses?X-TBA-Auth-Key=" + tbaAuth)
     let json = await response.json();
     return (await json);
 }
 
+/**
+ * @param {string} eventKey 
+ * @returns The OPRs object from TBA with OPRs by team keys nested in the object with key ["oprs"].
+ */
 export async function getEventOPRs(eventKey) {
     let response = await fetch("https://www.thebluealliance.com/api/v3/event/" + eventKey + "/oprs?X-TBA-Auth-Key=" + tbaAuth)
     let json = await response.json();

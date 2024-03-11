@@ -17,7 +17,7 @@ export default function EventForm({setTeamKey, setEventKey, setRefreshInterval})
                     <p>Event Key: <input id="event" type="text" name="event_key" /></p>
                     <p><input className="inputButtons" id="advanced" type="button" name="advanced" value="Advanced Options" onClick={() => toggleOptions()} /></p>
                     <div id="options" style={{display: "none"}}>
-                        <p>Refresh Interval (minutes): <input id="refresh" type="text" name="refresh" value="2" /></p>
+                        <p>Refresh Interval (minutes): <input id="refresh" type="number" name="refresh" step="any" defaultValue={2} /></p>
                     </div>
                     <input className="inputButtons" type="submit" value="Enter" />
                 </fieldset>

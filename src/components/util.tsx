@@ -2,7 +2,7 @@
  * @param {string} compLevel The one- or two-character comp level from TBA
  * @returns {string} A long, human readable representation of the comp level
  */
-export function compLevelToHumanReadable(compLevel) {
+export function compLevelToHumanReadable(compLevel: string): string {
     switch(compLevel) {
         case "qm":
             return "Qualifiers";
@@ -24,7 +24,7 @@ export function compLevelToHumanReadable(compLevel) {
  * @param {string} compLevel The one- or two-character comp level from TBA
  * @returns {string} A short, human readable representation of the comp level
  */
-export function compLevelToShortHumanReadable(compLevel) {
+export function compLevelToShortHumanReadable(compLevel: string): string {
     switch(compLevel) {
         case "qm":
             return "Qual";
@@ -43,19 +43,19 @@ export function compLevelToShortHumanReadable(compLevel) {
 
 /**
  * @param {string} teamKey 
- * @param {object[]} allStatuses 
+ * @param {object} allStatuses 
  * @returns {number} The rank of the requested team.
  */
-export function teamRankLookup(teamKey, allStatuses) {
+export function teamRankLookup(teamKey: string, allStatuses: object): number {
     return allStatuses[teamKey]["qual"]["ranking"]["rank"];
 }
 
 /**
  * @param {string} teamKey 
- * @param {object[]} allStatuses 
+ * @param {object} allStatuses 
  * @returns {number} The average score of the requested team.
  */
-export function teamScoreLookup(teamKey, allStatuses) {
+export function teamScoreLookup(teamKey: string, allStatuses: object): number {
     return allStatuses[teamKey]["qual"]["ranking"]["sort_orders"][2];
 }
 
@@ -65,15 +65,15 @@ export function teamScoreLookup(teamKey, allStatuses) {
  *                        array of OPRs within the OPRs response object.
  * @returns {number} The OPR of the requested team.
  */
-export function teamOPRLookup(teamKey, oprs) {
+export function teamOPRLookup(teamKey: string, oprs: object): number {
     return oprs["oprs"][teamKey];
 }
 
 /**
  * @param {number[]} numbers 
- * @returns The mean of the numbers in the array.
+ * @returns {number} The mean of the numbers in the array.
  */
-export function simpleAvg(numbers) {
+export function simpleAvg(numbers: number[]): number {
     let sum = 0;
     for(let i = 0; i < numbers.length; i++) {
         sum += numbers[i];
@@ -97,7 +97,7 @@ export function simpleAvg(numbers) {
  *          an equal probability that the red alliance and blue alliance could win the match. Weighting - 
  *          Average rank: 10%. Average alliance score: 20%. OPR: 70%.
  */
-export function getWinChances(ourAlliance, avgRedRank, avgBlueRank, avgRedScore, avgBlueScore, redOPRSum, blueOPRSum, totalTeams) {
+export function getWinChances(ourAlliance: string, avgRedRank: number, avgBlueRank: number, avgRedScore: number, avgBlueScore: number, redOPRSum: number, blueOPRSum: number, totalTeams: number): number {
     let blueChancesRank = ((((((totalTeams - avgBlueRank) / totalTeams) - (totalTeams - avgRedRank) / totalTeams)) * 0.5) + 0.5) * 100;
     let redChancesRank = (((((totalTeams - avgRedRank) / totalTeams) - ((totalTeams - avgBlueRank) / totalTeams)) * 0.5) + 0.5) * 100;
     let blueChancesScore = (avgBlueScore / (avgRedScore + avgBlueScore)) * 100;
@@ -106,5 +106,5 @@ export function getWinChances(ourAlliance, avgRedRank, avgBlueRank, avgRedScore,
     let redChancesOPR = (redOPRSum / (redOPRSum + blueOPRSum)) * 100;
     let blueChances = (blueChancesRank * 0.1) + (blueChancesScore * 0.2) + (blueChancesOPR * 0.7)
     let redChances = (redChancesRank * 0.1) + (redChancesScore * 0.2) + (redChancesOPR * 0.7)
-    return parseFloat(ourAlliance === "Blue" ? blueChances : redChances).toFixed(2);
+    return parseFloat((ourAlliance === "Blue" ? blueChances : redChances).toFixed(2));
 }

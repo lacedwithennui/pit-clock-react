@@ -1,8 +1,18 @@
-import { useEffect, useState } from "react";
-import { compLevelToShortHumanReadable, getWinChances, simpleAvg, teamRankLookup, teamScoreLookup, teamOPRLookup } from "./util";
+import React, { useEffect, useState } from "react";
 import EventForm from "./EventForm";
+import { compLevelToShortHumanReadable, getWinChances, simpleAvg, teamOPRLookup, teamRankLookup, teamScoreLookup } from "./util";
 
-export default function Nextpanel({teamKey, currentMatch, nextMatch, allStatuses, oprs, setTeamKey, setEventKey, setRefreshInterval}) {
+interface NextpanelProps {
+    teamKey: string,
+    currentMatch: object,
+    nextMatch: object,
+    allStatuses: object,
+    oprs: object,
+    setTeamKey: Function,
+    setEventKey: Function,
+    setRefreshInterval: Function
+}
+export default function Nextpanel({teamKey, currentMatch, nextMatch, allStatuses, oprs, setTeamKey, setEventKey, setRefreshInterval}: NextpanelProps) {
     let matchNum = (currentMatch["set_number"] === 1 ? currentMatch["match_number"] : currentMatch["set_number"]);
     let bumperClass = nextMatch["bumperClass"];
     const [rankRatioJSX, setRankRatioJSX] = useState(<></>);
@@ -12,17 +22,17 @@ export default function Nextpanel({teamKey, currentMatch, nextMatch, allStatuses
 
     useEffect(() => {
         async function set() {
-            let blueOPRSum = 0;
-            let blueRanks = [];
-            let blueScores = [];
+            let blueOPRSum: number = 0;
+            let blueRanks: number[] = [];
+            let blueScores: number[] = [];
             for(let i = 0; i < nextMatch["blueAlliance"]["team_keys"].length; i++) {
                 blueOPRSum += teamOPRLookup((await nextMatch)["blueAlliance"]["team_keys"][i], oprs);
                 blueRanks.push(teamRankLookup((await nextMatch)["blueAlliance"]["team_keys"][i], allStatuses));
                 blueScores.push(teamScoreLookup((await nextMatch)["blueAlliance"]["team_keys"][i], allStatuses));
             }
-            let redOPRSum = 0;
-            let redRanks = [];
-            let redScores = [];
+            let redOPRSum: number = 0;
+            let redRanks: number[] = [];
+            let redScores: number[] = [];
             for(let i = 0; i < nextMatch["redAlliance"]["team_keys"].length; i++) {
                 redOPRSum += teamOPRLookup((await nextMatch)["redAlliance"]["team_keys"][i], oprs);
                 redRanks.push(teamRankLookup((await nextMatch)["redAlliance"]["team_keys"][i], allStatuses));
@@ -32,11 +42,11 @@ export default function Nextpanel({teamKey, currentMatch, nextMatch, allStatuses
                 <p className="nextMatchHideable">
                     Total OPR Ratio (Blue:Red):{" "}
                     <span className="bluealliance">
-                        {parseFloat(blueOPRSum).toFixed(0)}
+                        {Math.trunc(blueOPRSum)}
                     </span>
                     :
                     <span className="redalliance">
-                        {parseFloat(redOPRSum).toFixed(0)}
+                        {Math.trunc(redOPRSum)}
                     </span>
                 </p>
             );
@@ -44,11 +54,11 @@ export default function Nextpanel({teamKey, currentMatch, nextMatch, allStatuses
                 <p className="nextMatchHideable">
                     Avg. Rank Ratio (Blue:Red):{" "}
                     <span className="bluealliance">
-                        {parseFloat(simpleAvg(blueRanks)).toFixed(0)}
+                        {Math.trunc(simpleAvg(blueRanks))}
                     </span>
                     :
                     <span className="redalliance">
-                        {parseFloat(simpleAvg(redRanks)).toFixed(0)}
+                        {Math.trunc(simpleAvg(redRanks))}
                     </span>
                 </p>
             );
@@ -56,11 +66,11 @@ export default function Nextpanel({teamKey, currentMatch, nextMatch, allStatuses
                 <p className="nextMatchHideable">
                     Avg. Score Ratio (Blue:Red):{" "}
                     <span className="bluealliance">
-                        {parseFloat(simpleAvg(blueScores)).toFixed(0)}
+                        {Math.trunc(simpleAvg(blueScores))}
                     </span>
                     :
                     <span className="redalliance">
-                        {parseFloat(simpleAvg(redScores)).toFixed(0)}
+                        {Math.trunc(simpleAvg(redScores))}
                     </span>
                 </p>
             );
@@ -72,8 +82,8 @@ export default function Nextpanel({teamKey, currentMatch, nextMatch, allStatuses
         <>
             <div>
                 <div id="nextpanel">
-                    <p class='nextpanel'>Current Match In Play: {compLevelToShortHumanReadable(currentMatch["comp_level"])} {matchNum}</p>
-                    <p class='nextpanel'>Next Match: {compLevelToShortHumanReadable(nextMatch["compLevel"])} {(nextMatch["setNumber"] === 1 ? nextMatch["matchNumber"] : nextMatch["setNumber"])}</p>
+                    <p className='nextpanel'>Current Match In Play: {compLevelToShortHumanReadable(currentMatch["comp_level"])} {matchNum}</p>
+                    <p className='nextpanel'>Next Match: {compLevelToShortHumanReadable(nextMatch["compLevel"])} {(nextMatch["setNumber"] === 1 ? nextMatch["matchNumber"] : nextMatch["setNumber"])}</p>
                     <p className="nextpanel">Station: {nextMatch["allianceStation"]}</p>
                     <p id="bumper" className={bumperClass}>{teamKey.replace("frc", "")}</p>
                     {oprSumJSX}

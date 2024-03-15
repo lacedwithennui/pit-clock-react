@@ -1,6 +1,7 @@
+import React from "react";
 import { compLevelToHumanReadable } from "./util";
 
-export default function VirtualKettering({teamKey, allMatches, allStatuses}) {
+export default function VirtualKettering({teamKey, allMatches, allStatuses}: {teamKey: string, allMatches: object[][], allStatuses: object}) {
     return (
         <>
             <div id="ketteringWrapper">
@@ -17,8 +18,8 @@ export default function VirtualKettering({teamKey, allMatches, allStatuses}) {
                     </thead>
                     <tbody>
                     {
-                        allMatches.map((matchGroup) => {
-                            return matchGroup.map((match) => (
+                        allMatches.map((matchGroup: object[]) => {
+                            return matchGroup.map((match: object) => (
                                 <>
                                     <tr>
                                         <td>{compLevelToHumanReadable(match["comp_level"]) + " " + (match["set_number"] === 1 ? match["match_number"] : match["set_number"])}</td>
@@ -44,7 +45,7 @@ export default function VirtualKettering({teamKey, allMatches, allStatuses}) {
 }
 
 function makeTD(ourTeamKey, match) {
-    let tds = [];
+    let tds: JSX.Element[] = [];
     for(let i = 0; i < 3; i++) {
         let teamKey = match["alliances"]["blue"]["team_keys"][i];
         tds.push(<td className={"tdBlue " + (teamKey === ourTeamKey ? "bluealliance" : "")}>{teamKey.replace("frc", "")}</td>)
@@ -62,14 +63,14 @@ function makeTD(ourTeamKey, match) {
 }
 
 function makeRankTD(match, statuses) {
-    let tds = [];
+    let tds: JSX.Element[] = [];
     for(let i = 0; i < 3; i++) {
         let teamKey = match["alliances"]["blue"]["team_keys"][i];
-        tds.push(<td class='rank'>Rank {statuses[teamKey]["qual"]["ranking"]["rank"]}</td>);
+        tds.push(<td className='rank'>Rank {statuses[teamKey]["qual"]["ranking"]["rank"]}</td>);
     }
     for(let i = 0; i < 3; i++) {
         let teamKey = match["alliances"]["red"]["team_keys"][i];
-        tds.push(<td class='rank'>Rank {statuses[teamKey]["qual"]["ranking"]["rank"]}</td>);
+        tds.push(<td className='rank'>Rank {statuses[teamKey]["qual"]["ranking"]["rank"]}</td>);
     }
     return tds
 }

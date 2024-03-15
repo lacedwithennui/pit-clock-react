@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import React from "react";
 
 export default function Counter({nextMatch}) {
     let [nextMatchTime, setNextMatchTime] = useState(0);
@@ -45,7 +46,7 @@ export function updateTimer(nextMatchTime) {
         seconds = Math.floor((distance % (1000 * 60)) / 1000);
     }
 
-    document.getElementById("counter").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
+    document.getElementById("counter")!.innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
     let timeString = new Date().toLocaleTimeString()
-    document.getElementById("currentTime").innerHTML = timeString.split(":")[0] + ":" + timeString.split(":")[1] + " " + timeString.split(" ")[1];
+    document.getElementById("currentTime")!.innerHTML = timeString.split(":")[0] + ":" + timeString.split(":")[1] + " " + timeString.split(" ")[1];
 }

@@ -2,11 +2,11 @@ import tbaAuth from "../assets/tokens/tba-authtoken.json";
 
 /**
  * Gets all matches from an event from The Blue Alliance API.
- * @param {String} eventKey the TBA event key for the request URL
+ * @param {string} eventKey the TBA event key for the request URL
  * @returns JSON data from The Blue Alliance containing 
  * every match and its data for a given event.
  */
-export async function getEventMatches(eventKey) {
+export async function getEventMatches(eventKey: string): Promise<object[][]> {
     try {
         let response = await fetch("https://www.thebluealliance.com/api/v3/event/"
                 +eventKey+"/matches/simple?X-TBA-Auth-Key="+tbaAuth);
@@ -15,17 +15,18 @@ export async function getEventMatches(eventKey) {
         return sorted;
     } catch(error) {
         console.error("Error while getting TBA data from getEventMatches: " + error);
+        return [[{"error": "Error while getting TBA data from getEventMatches: " + error}]];
     }
 }
 
 /**
  * Gets all matches scheduled for a team at a given event from The Blue Alliance API.
- * @param {String} teamKey the TBA team key for the request URL
- * @param {String} eventKey the TBA event key for the request URL
+ * @param {string} teamKey the TBA team key for the request URL
+ * @param {string} eventKey the TBA event key for the request URL
  * @returns JSON data from The Blue Alliance containing 
  * every match and its data for a given team within an event.
  */
-export async function getTeamEventMatches(teamKey, eventKey) {
+export async function getTeamEventMatches(teamKey: string, eventKey: string): Promise<object[][]> {
     try {
         let response = await fetch("https://www.thebluealliance.com/api/v3/team/"+teamKey+"/event/"
                 +eventKey+"/matches/simple?X-TBA-Auth-Key="+tbaAuth);
@@ -34,17 +35,18 @@ export async function getTeamEventMatches(teamKey, eventKey) {
         return sorted;
     } catch(error) {
         console.error("Error while getting TBA data from getTeamEventMatches: " + error);
+        return [[{"error": "Error while getting TBA data from getTeamEventMatches: " + error}]]
     }
 }
 
 /**
  * Gets "status" data from The Blue Alliance API including 
  * a team's record, rank, and average ranking points for a specified event
- * @param {String} teamKey the TBA team key for the request URL
- * @param {String} eventKey the TBA event key for the request URL
+ * @param {string} teamKey the TBA team key for the request URL
+ * @param {string} eventKey the TBA event key for the request URL
  * @returns TBA status data for a given team within a speficied event
  */
-export async function getTeamEventStatus(teamKey, eventKey) {
+export async function getTeamEventStatus(teamKey: string, eventKey: string) {
     try {
         let response = await fetch("https://www.thebluealliance.com/api/v3/team/"+teamKey+"/event/"
                 +eventKey+"/status?X-TBA-Auth-Key="+tbaAuth);
@@ -57,6 +59,7 @@ export async function getTeamEventStatus(teamKey, eventKey) {
         });
     } catch(error) {
         console.error("Error while getting TBA data from getTeamEventStatus: " + error);
+        return {"error": "Error while getting TBA data from getTeamEventStatus: " + error};
     }
 }
 
@@ -65,9 +68,9 @@ export async function getTeamEventStatus(teamKey, eventKey) {
  * @param {Dictionary} input the dictionary to sort
  * @returns the sorted dictionary
  */
-export async function sortMatchesByTime(input) {
+export async function sortMatchesByTime(input: object[]) {
     let receivedInput = input;
-    let qm, ef, qf, sf, f;
+    let qm: object[], ef: object[], qf: object[], sf: object[], f: object[];
     qm = []; ef = []; qf = []; sf = []; f = [];
     let all = [qm, ef, qf, sf, f];
     for(let i = 0; i < receivedInput.length; i++) {
@@ -101,13 +104,13 @@ export async function sortMatchesByTime(input) {
 
 /**
  * Gets the current match being played of a given event
- * @param {String} eventKey the TBA event key for the request URL
- * @returns the TBA match JSON array of the current match
+ * @param {string} eventKey the TBA event key for the request URL
+ * @returns the TBA match JSON object of the current match
  */
-export async function getCurrentEventMatch(eventKey) {
+export async function getCurrentEventMatch(eventKey: string): Promise<object> {
     try {
         let allEventMatches = await getEventMatches(eventKey);
-        var currentMatch;
+        let currentMatch: {} = {};
         for(let i = 0; i < allEventMatches.length; i++) {
             if(allEventMatches[i].length !== 0) {
                 for(let ii = 0; ii < allEventMatches[i].length; ii++) {
@@ -121,17 +124,18 @@ export async function getCurrentEventMatch(eventKey) {
         return currentMatch;
     } catch(error) {
         console.warn("Error getting current event match: " + error);
+        return {"error": "Error getting current event match: " + error};
     }
 }
 
 /**
- * @param {String} teamKey the TBA team key for the request URL
- * @param {String} eventKey the TBA event key for the request URL
- * @returns the next match that a team will play for a given event
+ * @param {string} teamKey the TBA team key for the request URL
+ * @param {string} eventKey the TBA event key for the request URL
+ * @returns {object} the next match that a team will play for a given event
  */
-export async function getNextTeamMatch(teamKey, eventKey) {
+export async function getNextTeamMatch(teamKey: string, eventKey: string): Promise<object> {
     let allTeamMatches = await getTeamEventMatches(teamKey, eventKey);
-    let nextMatch;
+    let nextMatch: object = {};
     for(let i = 0; i < allTeamMatches.length; i++) {
         let matchGroup = allTeamMatches[i].reverse()
         for(let j = 0; j < matchGroup.length; j++) {
@@ -141,13 +145,16 @@ export async function getNextTeamMatch(teamKey, eventKey) {
             }
         }
     }
-    if(typeof nextMatch === "undefined" || nextMatch === null) {
+    if(JSON.stringify(nextMatch) === JSON.stringify({})) {
         if(allTeamMatches.length !== 0) {
             nextMatch = allTeamMatches[0][0];
         }
+        else {
+            nextMatch = {"error": "Could not get next match."};
+        }
     }
 
-    let custom = {
+    let custom = nextMatch.hasOwnProperty("error") ? nextMatch : {
         "matchNumber": nextMatch["match_number"],
         "setNumber": nextMatch["set_number"],
         "allianceColor": nextMatch["alliances"]["red"]["team_keys"].includes(teamKey) ? "Red" : "Blue",
@@ -165,7 +172,7 @@ export async function getNextTeamMatch(teamKey, eventKey) {
  * @param {string} eventKey 
  * @returns The ranks object from TBA with team keys as keys.
  */
-export async function getEventRanks(eventKey) {
+export async function getEventRanks(eventKey: string): Promise<object> {
     let response = await fetch("https://www.thebluealliance.com/api/v3/event/" + eventKey + "/teams/statuses?X-TBA-Auth-Key=" + tbaAuth)
     let json = await response.json();
     return (await json);
@@ -175,7 +182,7 @@ export async function getEventRanks(eventKey) {
  * @param {string} eventKey 
  * @returns The OPRs object from TBA with OPRs by team keys nested in the object with key ["oprs"].
  */
-export async function getEventOPRs(eventKey) {
+export async function getEventOPRs(eventKey: string): Promise<object> {
     let response = await fetch("https://www.thebluealliance.com/api/v3/event/" + eventKey + "/oprs?X-TBA-Auth-Key=" + tbaAuth)
     let json = await response.json();
     return (await json);

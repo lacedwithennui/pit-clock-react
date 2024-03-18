@@ -11,7 +11,7 @@ export async function getEventMatches(eventKey: string): Promise<object[][]> {
         let response = await fetch("https://www.thebluealliance.com/api/v3/event/"
                 +eventKey+"/matches/simple?X-TBA-Auth-Key="+tbaAuth);
         let json = await response.json();
-        let sorted = sortMatchesByTime(json);
+        let sorted = sortMatchesByTime(await json);
         return sorted;
     } catch(error) {
         console.error("Error while getting TBA data from getEventMatches: " + error);
@@ -31,7 +31,7 @@ export async function getTeamEventMatches(teamKey: string, eventKey: string): Pr
         let response = await fetch("https://www.thebluealliance.com/api/v3/team/"+teamKey+"/event/"
                 +eventKey+"/matches/simple?X-TBA-Auth-Key="+tbaAuth);
         let responseJSON = await response.json();
-        var sorted = sortMatchesByTime(responseJSON);
+        var sorted = sortMatchesByTime(await responseJSON);
         return sorted;
     } catch(error) {
         console.error("Error while getting TBA data from getTeamEventMatches: " + error);
@@ -68,7 +68,7 @@ export async function getTeamEventStatus(teamKey: string, eventKey: string) {
  * @param {Dictionary} input the dictionary to sort
  * @returns the sorted dictionary
  */
-export async function sortMatchesByTime(input: object[]) {
+export function sortMatchesByTime(input: object[]) {
     let receivedInput = input;
     let qm: object[], ef: object[], qf: object[], sf: object[], f: object[];
     qm = []; ef = []; qf = []; sf = []; f = [];

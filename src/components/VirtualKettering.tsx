@@ -1,5 +1,5 @@
 import React from "react";
-import { compLevelToHumanReadable } from "./util";
+import { compLevelToHumanReadable } from "./util.tsx";
 
 export default function VirtualKettering({teamKey, allMatches, allStatuses}: {teamKey: string, allMatches: object[][], allStatuses: object}) {
     return (
@@ -19,22 +19,25 @@ export default function VirtualKettering({teamKey, allMatches, allStatuses}: {te
                     <tbody>
                     {
                         allMatches.map((matchGroup: object[]) => {
-                            return matchGroup.map((match: object) => (
-                                <>
-                                    <tr>
-                                        <td>{compLevelToHumanReadable(match["comp_level"]) + " " + (match["set_number"] === 1 ? match["match_number"] : match["set_number"])}</td>
-                                        {
-                                            makeTD(teamKey, match)
-                                        }
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        {
-                                            makeRankTD(match, allStatuses)
-                                        }
-                                    </tr>
-                                </>
-                        ))
+                            return matchGroup.map((match: object) => {
+                                return (
+                                    <>
+                                        <tr>
+                                            <td>{compLevelToHumanReadable(match["comp_level"]) + " " + (match["set_number"] === 1 ? match["match_number"] : match["set_number"])}</td>
+                                            {
+                                                
+                                                makeTD(teamKey, match)
+                                            }
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            {
+                                                makeRankTD(match, allStatuses)
+                                            }
+                                        </tr>
+                                    </>
+                            )
+                            })
                         })
                     }
                     </tbody>
@@ -44,7 +47,7 @@ export default function VirtualKettering({teamKey, allMatches, allStatuses}: {te
     )
 }
 
-function makeTD(ourTeamKey, match) {
+function makeTD(ourTeamKey: string, match: object) {
     let tds: JSX.Element[] = [];
     for(let i = 0; i < 3; i++) {
         let teamKey = match["alliances"]["blue"]["team_keys"][i];

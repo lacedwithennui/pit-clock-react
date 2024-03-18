@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import EventForm from "./EventForm";
-import { compLevelToShortHumanReadable, getWinChances, simpleAvg, teamOPRLookup, teamRankLookup, teamScoreLookup } from "./util";
+import EventForm from "./EventForm.tsx";
+import { compLevelToShortHumanReadable, getWinChances, simpleAvg, teamOPRLookup, teamRankLookup, teamScoreLookup } from "./util.tsx";
 
 interface NextpanelProps {
     teamKey: string,

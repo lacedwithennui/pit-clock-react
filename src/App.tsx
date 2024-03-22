@@ -51,7 +51,7 @@ function App() {
                 <Nextpanel teamKey={teamKey} currentMatch={currentEventMatch} nextMatch={nextTeamMatch} allStatuses={allStatuses} oprs={allOPRs} setTeamKey={setTeamKey} setEventKey={setEventKey} setRefreshInterval={setRefreshInterval} />
                 <div id='copy'>
                     <p className='copy'>Event Key: {eventKey}</p>
-                    <p className='copy'><a href='http://clock.hpbelmont.com' target="_blank" rel="noreferrer">clock.parkerdaletech.com</a></p>
+                    <p className='copy'><a href='http://clock.hpbelmont.com' target="_blank" rel="noreferrer">clock.hpbelmont.com</a></p>
                     <p className='copy'><a href='https://github.com/lacedwithennui/pit-clock-react' target="_blank" rel="noreferrer">github.com/lacedwithennui/pit-clock-react</a></p>
                     <p className='copy'>Copyright Hazel Belmont, FRC 5587 Titan Robotics.</p>
                 </div>

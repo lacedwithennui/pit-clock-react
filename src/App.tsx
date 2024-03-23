@@ -7,11 +7,14 @@ import Counter, {TimeClock} from "./components/Counter.tsx";
 import VirtualKettering from "./components/VirtualKettering.tsx";
 import { getCurrentEventMatch, getEventRanks, getNextTeamMatch, getTeamEventMatches, getTeamEventStatus, getEventOPRs } from "./components/tbaAPI.tsx";
 import logo from "./assets/logo.png";
+import Cookies from "js-cookie";
 
 function App() {
-    const [teamKey, setTeamKey] = useState("frc5587");
-    const [eventKey, setEventKey] = useState("2024vaash");
-    const [refreshIntervalMS, setRefreshInterval] = useState(15000)
+    let cookieTeamKey = Cookies.get("teamKey") !== undefined ? Cookies.get("teamKey")! : "frc5587";
+    let cookieEventKey = Cookies.get("eventKey") !== undefined ? Cookies.get("eventKey")! : "2024vafal";
+    const [teamKey, setTeamKey] = useState(cookieTeamKey);
+    const [eventKey, setEventKey] = useState(cookieEventKey);
+    const [refreshIntervalMS, setRefreshInterval] = useState(90000); // TODO: Cookie refresh interval
     const [nextTeamMatch, setNextTeamMatch] = useState({});
     const [currentEventMatch, setCurrentEventMatch] = useState({});
     const [allStatuses, setAllStatuses] = useState({});
@@ -19,7 +22,6 @@ function App() {
     const [allMatches, setAllMatches] = useState([[{}]]);
     const [allOPRs, setAllOPRs] = useState({});
     const [promisesResolved, setPromisesResolved] = useState(0);
-    const [hasFinishedFirstReload, setFinishedFirstReload] = useState(false);
     useEffect(() => {
       async function set() {
         let resolved = 0;
@@ -29,8 +31,6 @@ function App() {
         setTeamStatus(await getTeamEventStatus(teamKey, eventKey).then((resolution) => {resolved ++; setPromisesResolved(resolved); return resolution}));
         setAllMatches(await getTeamEventMatches(teamKey, eventKey).then((resolution) => {resolved ++; setPromisesResolved(resolved); return resolution}));
         setAllOPRs(await getEventOPRs(eventKey).then((resolution) => {resolved ++; setPromisesResolved(resolved); return resolution}));
-        setFinishedFirstReload(true);
-        console.log("has re-rendered");
       }
       set();
       const refreshInterval = setInterval(() => set(), refreshIntervalMS);

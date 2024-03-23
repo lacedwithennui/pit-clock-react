@@ -1,16 +1,28 @@
 import React from "react";
+import Cookies from "js-cookie";
 
 export default function EventForm({setTeamKey, setEventKey, setRefreshInterval} : {setTeamKey: Function, setEventKey: Function, setRefreshInterval: Function}) {
-    window.onload = () => toggleSettings();
+    window.onload = () => {
+        console.log(Cookies.get("teamKey"))
+        if(document.getElementsByTagName("form")[0].style.display === "none" && Cookies.get("teamKey") === undefined) {
+            toggleSettings();
+        }
+    };
     return (
         <>
             <button id="settingsToggle" onClick={() => toggleSettings()}><p>Open Settings</p></button>
             <form action="success.php" style={{display: "none"}} onSubmit={(event) => {
                     event.preventDefault();
-                    toggleSettings()
-                    setTeamKey(((event.target as HTMLElement).querySelector("#team") as HTMLInputElement)!.value.includes("frc") ? ((event.target as HTMLElement).querySelector("#team") as HTMLInputElement)!.value : "frc" + ((event.target as HTMLElement).querySelector("#team") as HTMLInputElement)!.value);
-                    setEventKey(((event.target as HTMLElement).querySelector("#event") as HTMLInputElement)!.value);
-                    setRefreshInterval(parseFloat(((event.target as HTMLElement).querySelector("#refresh") as HTMLInputElement)!.value) * 60000)
+                    toggleSettings();
+                    let teamKey = ((event.target as HTMLElement).querySelector("#team") as HTMLInputElement)!.value.includes("frc") ? ((event.target as HTMLElement).querySelector("#team") as HTMLInputElement)!.value : "frc" + ((event.target as HTMLElement).querySelector("#team") as HTMLInputElement)!.value;
+                    let eventKey = ((event.target as HTMLElement).querySelector("#event") as HTMLInputElement)!.value;
+                    let refresh = parseFloat(((event.target as HTMLElement).querySelector("#refresh") as HTMLInputElement)!.value) * 60000;
+                    setTeamKey(teamKey);
+                    setEventKey(eventKey);
+                    setRefreshInterval(refresh);
+                    Cookies.set("teamKey", teamKey, {expires: 6});
+                    Cookies.set("eventKey", eventKey, {expires: 6});
+                    Cookies.set("refresh", refresh.toString(), {expires: 6});
                 }
             }>
                 <fieldset id="field">

@@ -140,14 +140,20 @@ export async function getNextTeamMatch(teamKey: string, eventKey: string): Promi
         let matchGroup = allTeamMatches[i].reverse()
         for(let j = 0; j < matchGroup.length; j++) {
             let match = matchGroup[j]
-            if(match["predicted_time"] >= new Date().getTime() / 1000) {
-                nextMatch = match;
-            }
+            // if(match["predicted_time"] >= new Date().getTime() / 1000) {
+            //     nextMatch = match;
+            // }
+
+            if(match["winning_alliance"] === ""
+                             || j === matchGroup.length+1) {
+                        nextMatch = match;
+                    }
         }
     }
     if(JSON.stringify(nextMatch) === JSON.stringify({})) {
         if(allTeamMatches.length !== 0) {
             nextMatch = allTeamMatches[0][0];
+            console.log("defaulting!")
         }
         else {
             nextMatch = {"error": "Could not get next match."};

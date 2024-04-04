@@ -2,7 +2,7 @@ import React from "react";
 import { compLevelToHumanReadable } from "./util.tsx";
 
 export default function VirtualKettering({teamKey, allMatches, allStatuses}: {teamKey: string, allMatches: object[][], allStatuses: object}) {
-    return (
+    return (Object.keys(allMatches[0][0]).length === 0 || Object.keys(allStatuses).length === 0) ? <></> : (
         <>
             <div id="ketteringWrapper">
                 <table id="kettering">

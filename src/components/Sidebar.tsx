@@ -21,6 +21,7 @@ function StatusPanel({teamKey, status}: {teamKey: string, status: object}) {
         }
         setDependants(status);
     }, [status["rank"], status["recordString"]]);
+    teamKey.replace("frc", "")
     return (
         <>
             <p>Team {teamKey.replace("frc", "")} Rank: {rank}</p>

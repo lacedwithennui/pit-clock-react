@@ -1,4 +1,5 @@
 import tbaAuth from "../assets/tokens/tba-authtoken.json";
+import axios, {AxiosResponse} from "axios";
 
 /**
  * Gets all matches from an event from The Blue Alliance API.
@@ -60,6 +61,18 @@ export async function getTeamEventStatus(teamKey: string, eventKey: string) {
     } catch(error) {
         console.error("Error while getting TBA data from getTeamEventStatus: " + error);
         return {"error": "Error while getting TBA data from getTeamEventStatus: " + error};
+    }
+}
+
+export const getTeamEventStatusAxios = async (teamKey: string, eventKey: string): Promise<object> => {
+    const response: AxiosResponse<any, any> = await axios.get(
+        "https://www.thebluealliance.com/api/v3/team/"+teamKey+"/event/"+eventKey+"/status?X-TBA-Auth-Key="+tbaAuth
+    )
+    const rawData = response.data;
+    return {
+        "rank": rawData["qual"]["ranking"]["rank"],
+        "recordString": rawData["qual"]["ranking"]["record"]["wins"] + "-" + rawData["qual"]["ranking"]["record"]["losses"] + "-" + rawData["qual"]["ranking"]["record"]["ties"],
+        "averageRP": rawData["qual"]["ranking"]["sort_orders"][0]
     }
 }
 
@@ -182,6 +195,15 @@ export async function getEventRanks(eventKey: string): Promise<object> {
     let response = await fetch("https://www.thebluealliance.com/api/v3/event/" + eventKey + "/teams/statuses?X-TBA-Auth-Key=" + tbaAuth)
     let json = await response.json();
     return (await json);
+}
+
+export const getEventRanksAxios = async (eventKey: string): Promise<object> => {
+    const response: AxiosResponse<any, any> = await axios.get(
+        "https://www.thebluealliance.com/api/v3/event/" + eventKey + "/teams/statuses?X-TBA-Auth-Key=" + tbaAuth
+    )
+    console.log(response)
+    console.log(response.data)
+    return response.data
 }
 
 /**

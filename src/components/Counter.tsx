@@ -22,6 +22,10 @@ export default function Counter({nextMatch}) {
 }
 
 export function TimeClock() {
+    useEffect(() => {
+        const counterUpdater = setInterval(() => updateClock(), 1000);
+        return () => clearInterval(counterUpdater)
+    }, [])
     return (
         <h1 id="currentTime">
             0:00 AM
@@ -47,6 +51,11 @@ export function updateTimer(nextMatchTime) {
     }
 
     document.getElementById("counter")!.innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
+    let timeString = new Date().toLocaleTimeString()
+    document.getElementById("currentTime")!.innerHTML = timeString.split(":")[0] + ":" + timeString.split(":")[1] + " " + timeString.split(" ")[1];
+}
+
+export function updateClock() {
     let timeString = new Date().toLocaleTimeString()
     document.getElementById("currentTime")!.innerHTML = timeString.split(":")[0] + ":" + timeString.split(":")[1] + " " + timeString.split(" ")[1];
 }

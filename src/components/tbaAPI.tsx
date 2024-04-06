@@ -70,7 +70,7 @@ export const getTeamEventStatusAxios = async (teamKey: string, eventKey: string)
     )
     const rawData = response.data;
     return {
-        "rank": rawData["qual"]["ranking"]["rank"],
+        "rank": (rawData["qual"]["ranking"]["rank"] === null ? 0 : rawData["qual"]["ranking"]["rank"]),
         "recordString": rawData["qual"]["ranking"]["record"]["wins"] + "-" + rawData["qual"]["ranking"]["record"]["losses"] + "-" + rawData["qual"]["ranking"]["record"]["ties"],
         "averageRP": rawData["qual"]["ranking"]["sort_orders"][0]
     }
@@ -153,14 +153,14 @@ export async function getNextTeamMatch(teamKey: string, eventKey: string): Promi
         let matchGroup = allTeamMatches[i].reverse()
         for(let j = 0; j < matchGroup.length; j++) {
             let match = matchGroup[j]
-            // if(match["predicted_time"] >= new Date().getTime() / 1000) {
-            //     nextMatch = match;
-            // }
+            if(match["predicted_time"] >= new Date().getTime() / 1000) {
+                nextMatch = match;
+            }
 
-            if(match["winning_alliance"] === ""
-                             || j === matchGroup.length+1) {
-                        nextMatch = match;
-                    }
+            // if(match["winning_alliance"] === ""
+            //                  || j === matchGroup.length+1) {
+            //             nextMatch = match;
+            //         }
         }
     }
     if(JSON.stringify(nextMatch) === JSON.stringify({})) {

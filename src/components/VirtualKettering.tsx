@@ -1,8 +1,8 @@
 import React from "react";
-import { compLevelToHumanReadable } from "./util.tsx";
+import { compLevelToHumanReadable, teamRankLookup } from "./util.tsx";
 
-export default function VirtualKettering({teamKey, allMatches, allStatuses}: {teamKey: string, allMatches: object[][], allStatuses: object}) {
-    return (Object.keys(allMatches[0][0]).length === 0 || Object.keys(allStatuses).length === 0) ? <></> : (
+export default function VirtualKettering({teamKey, allMatches, allStatuses, allMatchesLoading, allStatusesLoading}: {teamKey: string, allMatches: object[][], allStatuses: object, allMatchesLoading: boolean, allStatusesLoading: boolean}) {
+    return (allMatchesLoading) ? <></> : (
         <>
             <div id="ketteringWrapper">
                 <table id="kettering">
@@ -29,12 +29,14 @@ export default function VirtualKettering({teamKey, allMatches, allStatuses}: {te
                                                 makeTD(teamKey, match)
                                             }
                                         </tr>
-                                        <tr>
-                                            <td></td>
-                                            {
-                                                makeRankTD(match, allStatuses)
-                                            }
-                                        </tr>
+                                        {allStatusesLoading ? {} :
+                                            <tr>
+                                                <td></td>
+                                                {
+                                                    makeRankTD(match, allStatuses)
+                                                }
+                                            </tr>
+                                        }
                                     </>
                             )
                             })
@@ -69,11 +71,11 @@ function makeRankTD(match, statuses) {
     let tds: JSX.Element[] = [];
     for(let i = 0; i < 3; i++) {
         let teamKey = match["alliances"]["blue"]["team_keys"][i];
-        tds.push(<td className='rank'>Rank {statuses[teamKey]["qual"]["ranking"]["rank"]}</td>);
+        tds.push(<td className='rank'>Rank {teamRankLookup(teamKey, statuses)}</td>);
     }
     for(let i = 0; i < 3; i++) {
         let teamKey = match["alliances"]["red"]["team_keys"][i];
-        tds.push(<td className='rank'>Rank {statuses[teamKey]["qual"]["ranking"]["rank"]}</td>);
+        tds.push(<td className='rank'>Rank {teamRankLookup(teamKey, statuses)}</td>);
     }
     return tds
 }

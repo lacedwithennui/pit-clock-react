@@ -8,12 +8,15 @@ interface NextpanelProps {
     nextMatch: object,
     allStatuses: object,
     oprs: object,
+    currentEventMatchLoading: boolean,
+    allStatusesLoading: boolean,
+    allOPRsLoading: boolean,
     setTeamKey: Function,
     setEventKey: Function,
     setRefreshInterval: Function
 }
-export default function Nextpanel({teamKey, currentMatch, nextMatch, allStatuses, oprs, setTeamKey, setEventKey, setRefreshInterval}: NextpanelProps) {
-    let matchNum = (currentMatch["set_number"] === 1 ? currentMatch["match_number"] : currentMatch["set_number"]);
+export default function Nextpanel({teamKey, currentMatch, nextMatch, allStatuses, currentEventMatchLoading, allStatusesLoading, allOPRsLoading, oprs, setTeamKey, setEventKey, setRefreshInterval}: NextpanelProps) {
+    let matchNum = currentEventMatchLoading ? 0 : ((currentMatch["set_number"] === undefined || currentMatch["set_number"] === null || currentMatch["set_number"] === 1) ? currentMatch["match_number"] : currentMatch["set_number"]);
     let bumperClass = nextMatch["bumperClass"];
     const [rankRatioJSX, setRankRatioJSX] = useState(<></>);
     const [scoreRatioJSX, setScoreRatioJSX] = useState(<></>);
@@ -78,7 +81,7 @@ export default function Nextpanel({teamKey, currentMatch, nextMatch, allStatuses
         }
         set();
     }, [nextMatch, allStatuses, oprs])
-    return (
+    return ((allOPRsLoading || allStatusesLoading || currentEventMatchLoading) ? <EventForm setTeamKey={setTeamKey} setEventKey={setEventKey} setRefreshInterval={setRefreshInterval} /> :
         <>
             <div>
                 <div id="nextpanel">

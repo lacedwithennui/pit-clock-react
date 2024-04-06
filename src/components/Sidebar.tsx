@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { teamObjectRankLookup, teamRankLookup } from "./util.tsx";
 
-export default function Sidebar({teamKey, status, allStatuses}: {teamKey: string, status: object, allStatuses: object}) {
+export default function Sidebar({teamKey, status, allStatuses, statusLoading, allStatusesLoading}: {teamKey: string, status: object, allStatuses: object, statusLoading: boolean, allStatusesLoading: boolean}) {
     return (
         <div id="sidebar">
-            <StatusPanel teamKey={teamKey} status={status} />
-            <RankList allStatuses={allStatuses} />
+            {statusLoading ? <></> : <StatusPanel teamKey={teamKey} status={status} />}
+            {allStatusesLoading ? <></> : <RankList allStatuses={allStatuses} />}
         </div>
     )
 }
@@ -15,12 +16,13 @@ function StatusPanel({teamKey, status}: {teamKey: string, status: object}) {
     let [avgRP, setAvgRP] = useState(0.0);
     useEffect(() => {
         async function setDependants(info: object) {
-            setRank((info)["rank"])
-            setRecordString((info)["recordString"])
-            setAvgRP(info["averageRP"]);
+            let hasResolved: boolean = (info === null || info === undefined || Object.keys(info).length !== 0);
+            setRank(hasResolved ? (info)["rank"] : 0)
+            setRecordString(hasResolved ? (info)["recordString"] : "");
+            setAvgRP(hasResolved ? info["averageRP"] : 0);
         }
         setDependants(status);
-    }, [status["rank"], status["recordString"]]);
+    }, []);//[rank["rank"], status["recordString"]]);
     teamKey.replace("frc", "")
     return (
         <>
@@ -39,7 +41,7 @@ function RankList({allStatuses}: {allStatuses: object}) {
         statusArray.push(allStatuses[key])
     });
     statusArray.sort((a, b) => {
-        return a["qual"]["ranking"]["rank"] - b["qual"]["ranking"]["rank"];
+        return teamObjectRankLookup(a) - teamObjectRankLookup(b);
     })
     for (let i = 0; i < statusArray.length; i++) {
         if(i === 0 || i < statusArray.length / 2) {

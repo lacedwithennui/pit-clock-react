@@ -21,53 +21,69 @@ function App() {
         error: nextTeamMatchError,
         isLoading: nextTeamMatchLoading,
     } = useQuery("nextTeamMatch", () => getNextTeamMatch(teamKey, eventKey));
-    const [currentEventMatch, setCurrentEventMatch] = useState({});
+    const {
+        data: currentEventMatch,
+        error: currentEventMatchError,
+        isLoading: currentEventMatchLoading
+    } = useQuery("currentEventMatch", () => getCurrentEventMatch(eventKey))
     const {
         data: allStatuses,
         error: allStatusesError,
         isLoading: allStatusesLoading,
     } = useQuery("allStatuses", () => getEventRanksAxios(eventKey));
-
     const {
         data: teamStatus,
         error: teamStatusError,
         isLoading: teamStatusLoading
     } = useQuery("teamStatus", () => getTeamEventStatusAxios(teamKey, eventKey));
-    const [allMatches, setAllMatches] = useState([[{}]]);
-    const [allOPRs, setAllOPRs] = useState({});
+    const {
+        data: allMatches,
+        error: allMatchesError,
+        isLoading: allMatchesLoading
+    } = useQuery("allMatches", () => getTeamEventMatches(teamKey, eventKey));
+    const {
+        data: allOPRs,
+        error: allOPRsError,
+        isLoading: allOPRsLoading
+    } = useQuery("allOPRs", () => getEventOPRs(eventKey))
     const [promisesResolved, setPromisesResolved] = useState(0);
 
     useEffect(() => {
-      async function set() {
-        let resolved = 0;
-        setCurrentEventMatch(await getCurrentEventMatch(eventKey).then((resolution) => {resolved ++; setPromisesResolved(resolved); return resolution}));
-        setAllMatches(await getTeamEventMatches(teamKey, eventKey).then((resolution) => {resolved ++; setPromisesResolved(resolved); return resolution}));
-        setAllOPRs(await getEventOPRs(eventKey).then((resolution) => {resolved ++; setPromisesResolved(resolved); return resolution}));
-      }
-      set();
-      const refreshInterval = setInterval(() => set(), refreshIntervalMS);
-      console.log(promisesResolved)
-      return () => clearInterval(refreshInterval);
-    }, [teamKey, eventKey, refreshIntervalMS]);
+        // eslint-disable-next-line no-restricted-globals
+        const refreshTimer = setInterval(() => location.reload(), refreshIntervalMS);
+        return () => clearInterval(refreshTimer);
+    }, [])
+
+    // useEffect(() => {
+    //   async function set() {
+    //     let resolved = 0;
+    //     setCurrentEventMatch(await getCurrentEventMatch(eventKey).then((resolution) => {resolved ++; setPromisesResolved(resolved); return resolution}));
+    //     setAllOPRs(await getEventOPRs(eventKey).then((resolution) => {resolved ++; setPromisesResolved(resolved); return resolution}));
+    //   }
+    //   set();
+    //   const refreshInterval = setInterval(() => set(), refreshIntervalMS);
+    //   console.log(promisesResolved)
+    //   return () => clearInterval(refreshInterval);
+    // }, [teamKey, eventKey, refreshIntervalMS]);
 
     console.log(promisesResolved)
-    return (promisesResolved < 3) ? <div></div> : (
+    return ((allStatusesLoading || allMatchesLoading) ? <div></div> ://(nextTeamMatchLoading || currentEventMatchLoading || allStatusesLoading || teamStatusLoading || allMatchesLoading || allOPRsLoading) ? <div></div> : //promisesResolved < 2) ? <div></div> : (
         <>
             <div className="App">
-                <Sidebar teamKey={teamKey} status={teamStatus!} allStatuses={allStatuses!} />
-                <div id="centercontent">
-                    <Counter nextMatch={nextTeamMatch} />
-                    <VirtualKettering teamKey={teamKey} allMatches={allMatches} allStatuses={allStatuses!} />
-                    <TimeClock />
-                </div>
-                <Nextpanel teamKey={teamKey} currentMatch={currentEventMatch} nextMatch={nextTeamMatch!} allStatuses={allStatuses!} oprs={allOPRs} setTeamKey={setTeamKey} setEventKey={setEventKey} setRefreshInterval={setRefreshInterval} />
                 <div id='copy'>
                     <p className='copy'>Event Key: {eventKey}</p>
                     <p className='copy'><a href='http://clock.hpbelmont.com' target="_blank" rel="noreferrer">clock.hpbelmont.com</a></p>
                     <p className='copy'><a href='https://github.com/lacedwithennui/pit-clock-react' target="_blank" rel="noreferrer">github.com/lacedwithennui/pit-clock-react</a></p>
                     <p className='copy'>Copyright Hazel Belmont, FRC 5587 Titan Robotics.</p>
                 </div>
-                <img src={logo} alt="FRC 5587 Titan Robotics Logo" />
+                <img id="logo" src={logo} alt="FRC 5587 Titan Robotics Logo" />
+                <Sidebar teamKey={teamKey} status={teamStatus} allStatuses={allStatuses} statusLoading={teamStatusLoading} allStatusesLoading={allStatusesLoading} />
+                <div id="centercontent">
+                    <Counter nextMatch={nextTeamMatch} nextTeamMatchLoading={nextTeamMatchLoading} />
+                    <VirtualKettering teamKey={teamKey} allMatches={allMatches} allStatuses={allStatuses} allMatchesLoading={allMatchesLoading} allStatusesLoading={allStatusesLoading} />
+                    <TimeClock />
+                </div>
+                <Nextpanel teamKey={teamKey} currentMatch={currentEventMatch} nextMatch={nextTeamMatch} allStatuses={allStatuses} oprs={allOPRs} currentEventMatchLoading={currentEventMatchLoading} allStatusesLoading={allStatusesLoading} allOPRsLoading={allOPRsLoading} setTeamKey={setTeamKey} setEventKey={setEventKey} setRefreshInterval={setRefreshInterval} />
             </div>
         </>
       );

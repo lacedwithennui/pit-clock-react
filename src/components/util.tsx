@@ -47,7 +47,7 @@ export function compLevelToShortHumanReadable(compLevel: string): string {
  * @returns {number} The rank of the requested team.
  */
 export function teamRankLookup(teamKey: string, allStatuses: object): number {
-    return (allStatuses[teamKey] === null || allStatuses[teamKey] === undefined || allStatuses[teamKey]["qual"]["ranking"]["rank"] === null || allStatuses[teamKey]["qual"]["ranking"]["rank"] === undefined) ? 0 : allStatuses[teamKey]["qual"]["ranking"]["rank"];
+    return (allStatuses[teamKey]["qual"] === null || allStatuses[teamKey]["qual"] === undefined || allStatuses[teamKey]["qual"]["ranking"]["rank"] === null || allStatuses[teamKey]["qual"]["ranking"]["rank"] === undefined) ? 0 : allStatuses[teamKey]["qual"]["ranking"]["rank"];
 }
 
 export function teamObjectRankLookup(teamStatus: object): number {

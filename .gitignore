@@ -23,4 +23,5 @@ yarn-debug.log*
 yarn-error.log*
 
 tba-authtoken.json
+nexus-authtoken.json
 cheesy_data/

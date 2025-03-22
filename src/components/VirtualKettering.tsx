@@ -2,7 +2,7 @@ import React from "react";
 import { compLevelToHumanReadable, teamRankLookup } from "./util.tsx";
 
 export default function VirtualKettering({teamKey, allMatches, allStatuses, allMatchesLoading, allStatusesLoading}: {teamKey: string, allMatches: object[][], allStatuses: object, allMatchesLoading: boolean, allStatusesLoading: boolean}) {
-    return (allMatchesLoading) ? <></> : (
+    return (allMatchesLoading || Object.keys(allMatches[0][0]).length === 0) ? <></> : (
         <>
             <div id="ketteringWrapper">
                 <table id="kettering">
@@ -77,5 +77,6 @@ function makeRankTD(match, statuses) {
         let teamKey = match["alliances"]["red"]["team_keys"][i];
         tds.push(<td className='rank'>Rank {teamRankLookup(teamKey, statuses)}</td>);
     }
+    tds.push(<td className="rank"></td>)
     return tds
 }

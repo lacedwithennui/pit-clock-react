@@ -66,7 +66,7 @@ function App() {
     //   return () => clearInterval(refreshInterval);
     // }, [teamKey, eventKey, refreshIntervalMS]);
 
-    console.log(promisesResolved)
+    // console.log(promisesResolved)
     return ((allStatusesLoading || allMatchesLoading) ? <div></div> ://(nextTeamMatchLoading || currentEventMatchLoading || allStatusesLoading || teamStatusLoading || allMatchesLoading || allOPRsLoading) ? <div></div> : //promisesResolved < 2) ? <div></div> : (
         <>
             <div className="App">
@@ -79,7 +79,7 @@ function App() {
                 <img id="logo" src={logo} alt="FRC 5587 Titan Robotics Logo" />
                 <Sidebar teamKey={teamKey} status={teamStatus} allStatuses={allStatuses} statusLoading={teamStatusLoading} allStatusesLoading={allStatusesLoading} />
                 <div id="centercontent">
-                    <Counter nextMatch={nextTeamMatch} nextTeamMatchLoading={nextTeamMatchLoading} />
+                    <Counter eventKey={eventKey} nextMatch={nextTeamMatch} nextTeamMatchLoading={nextTeamMatchLoading} />
                     <VirtualKettering teamKey={teamKey} allMatches={allMatches} allStatuses={allStatuses} allMatchesLoading={allMatchesLoading} allStatusesLoading={allStatusesLoading} />
                     <TimeClock />
                 </div>

@@ -155,7 +155,17 @@ td.matchName {
     /* margin: auto; */
     display: flex;
     justify-content: center;
+    flex-direction: column;
     /* padding-left: 4.55vw; */
+}
+
+#counterDiv p {
+    display: flex;
+    text-align: center;
+    align-self: center;
+    height: fit-content;
+    margin: 0.2em;
+    font-size: 2em;
 }
 
 #matches {
@@ -223,8 +233,8 @@ p.copy {
 }
 
 .rankings {
-    margin: 0.3em 0;
-    font-size: 1em !important;
+    margin: 0.5em 0.25em;
+    font-size: 1.25em !important;
 }
 
 td.rank {
@@ -248,6 +258,10 @@ a {
 table {
     border-collapse: collapse;
     width: 100%;
+}
+
+tr:nth-child(4n+1), tr:nth-child(4n+2) {
+    background-color: #eeeeee;
 }
 
 @media only screen and (max-width: 480px), only screen and (max-device-width: 480px) {

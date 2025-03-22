@@ -41,25 +41,37 @@ function RankList({allStatuses}: {allStatuses: object}) {
         statusArray.push(allStatuses[key])
     });
     statusArray.sort((a, b) => {
-        return teamObjectRankLookup(a) - teamObjectRankLookup(b);
+        return (teamObjectRankLookup(a) === 0 ? 999999 : (teamObjectRankLookup(a) - teamObjectRankLookup(b)));
     })
     for (let i = 0; i < statusArray.length; i++) {
-        if(i === 0 || i < statusArray.length / 3) {
-            column[0].push(<p className='rankings'>Rank {teamObjectRankLookup(statusArray[i])}: {(statusArray[i]["teamKey"] as string).replace("frc", "")}</p>);
-        }
-        else if(i >= statusArray.length / 3 && i < (2 * statusArray.length) / 3){
-            column[1].push(<p className='rankings'>Rank {teamObjectRankLookup(statusArray[i])}: {(statusArray[i]["teamKey"] as string).replace("frc", "")}</p>);
-        }
-        else {
-            column[2].push(<p className='rankings'>Rank {teamObjectRankLookup(statusArray[i])}: {(statusArray[i]["teamKey"] as string).replace("frc", "")}</p>);
-        }
+        // if(i === 0 || i < statusArray.length / 3) {
+        //     column[0].push(<p className='rankings'>Rank {teamObjectRankLookup(statusArray[i])}: {(statusArray[i]["teamKey"] as string).replace("frc", "")}</p>);
+        // }
+        // else if(i >= statusArray.length / 3 && i < (2 * statusArray.length) / 3){
+        //     column[1].push(<p className='rankings'>Rank {teamObjectRankLookup(statusArray[i])}: {(statusArray[i]["teamKey"] as string).replace("frc", "")}</p>);
+        // }
+        // else {
+        //     column[2].push(<p className='rankings'>Rank {teamObjectRankLookup(statusArray[i])}: {(statusArray[i]["teamKey"] as string).replace("frc", "")}</p>);
+        // }
+        // if(i === 0 || i < statusArray.length / 2) {
+        //     column[0].push(<p className='rankings'>Rank {teamObjectRankLookup(statusArray[i])}: {(statusArray[i]["teamKey"] as string).replace("frc", "")}</p>);
+        // }
+        // else if(i >= (statusArray.length / 2) + 1 && i < statusArray.length){
+        //     column[1].push(<p className='rankings'>Rank {teamObjectRankLookup(statusArray[i])}: {(statusArray[i]["teamKey"] as string).replace("frc", "")}</p>);
+        // }
+    }
+    for(let i = 0; i <= statusArray.length / 2; i++) {
+        column[0].push(<p className='rankings'>Rank {teamObjectRankLookup(statusArray[i])}: {(statusArray[i]["teamKey"] as string).replace("frc", "")}</p>);
+    }
+    for(let j = Math.floor((statusArray.length / 2) + 1); j < statusArray.length; j++) {
+        column[1].push(<p className='rankings'>Rank {teamObjectRankLookup(statusArray[j])}: {(statusArray[j]["teamKey"] as string).replace("frc", "")}</p>);
     }
 
     return (
         <div id="matches">
             <div className="column">{column[0]}</div>
             <div className="column">{column[1]}</div>
-            <div className="column">{column[2]}</div>
+            {/* <div className="column">{column[2]}</div> */}
         </div>
     )
 }

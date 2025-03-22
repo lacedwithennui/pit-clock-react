@@ -1,4 +1,5 @@
 import tbaAuth from "../assets/tokens/tba-authtoken.json";
+import nexusAuth from "../assets/tokens/nexus-authtoken.json";
 import axios, {AxiosResponse} from "axios";
 
 /**
@@ -70,7 +71,7 @@ export const getTeamEventStatusAxios = async (teamKey: string, eventKey: string)
     )
     const rawData = response.data;
     return {
-        "rank": (rawData["qual"]["ranking"]["rank"] === null ? 0 : rawData["qual"]["ranking"]["rank"]),
+        "rank": (rawData["qual"]["ranking"] === undefined ? 0 : rawData["qual"]["ranking"]["rank"]),
         "recordString": rawData["qual"]["ranking"]["record"]["wins"] + "-" + rawData["qual"]["ranking"]["record"]["losses"] + "-" + rawData["qual"]["ranking"]["record"]["ties"],
         "averageRP": rawData["qual"]["ranking"]["sort_orders"][0]
     }
@@ -163,13 +164,13 @@ export async function getNextTeamMatch(teamKey: string, eventKey: string): Promi
             //         }
         }
     }
-    if(JSON.stringify(nextMatch) === JSON.stringify({})) {
+    if(JSON.stringify(nextMatch) === JSON.stringify({}) || nextMatch === undefined || nextMatch === null) {
         if(allTeamMatches.length !== 0) {
             nextMatch = allTeamMatches[0][0];
             console.log("defaulting!")
         }
         else {
-            nextMatch = {"error": "Could not get next match."};
+            nextMatch = {"error": "", "bumperClass": ""};
         }
     }
 
@@ -214,4 +215,28 @@ export async function getEventOPRs(eventKey: string): Promise<object> {
     let response = await fetch("https://www.thebluealliance.com/api/v3/event/" + eventKey + "/oprs?X-TBA-Auth-Key=" + tbaAuth)
     let json = await response.json();
     return (await json);
+}
+
+export async function getQueueTimeNexus(eventKey: string, matchKey: number) {
+    let response = await fetch("https://frc.nexus/api/v1/event/" + eventKey, {
+        headers: {
+          "Nexus-Api-Key": nexusAuth,
+        }
+    });
+    let json = await response.json();
+
+    console.log(json["matches"])
+    console.log(matchKey)
+    console.log(json["matches"][matchKey])
+    return json["matches"][matchKey]["times"]["estimatedQueueTime"];
+}
+
+export async function getMatchTimeNexus(eventKey: string, matchKey: number) {
+    let response = await fetch("https://frc.nexus/api/v1/event/" + eventKey, {
+        headers: {
+          "Nexus-Api-Key": nexusAuth,
+        }
+    });
+    let json = await response.json();
+    return json["matches"][matchKey]["times"]["estimatedOnFieldTime"];
 }

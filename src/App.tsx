@@ -83,7 +83,7 @@ function App() {
                     <VirtualKettering teamKey={teamKey} allMatches={allMatches} allStatuses={allStatuses} allMatchesLoading={allMatchesLoading} allStatusesLoading={allStatusesLoading} />
                     <TimeClock />
                 </div>
-                <Nextpanel teamKey={teamKey} currentMatch={currentEventMatch} nextMatch={nextTeamMatch} allStatuses={allStatuses} oprs={allOPRs} currentEventMatchLoading={currentEventMatchLoading} allStatusesLoading={allStatusesLoading} allOPRsLoading={allOPRsLoading} setTeamKey={setTeamKey} setEventKey={setEventKey} setRefreshInterval={setRefreshInterval} />
+                <Nextpanel teamKey={teamKey} eventKey={eventKey} currentMatch={currentEventMatch} nextMatch={nextTeamMatch} allStatuses={allStatuses} oprs={allOPRs} currentEventMatchLoading={currentEventMatchLoading} allStatusesLoading={allStatusesLoading} allOPRsLoading={allOPRsLoading} setTeamKey={setTeamKey} setEventKey={setEventKey} setRefreshInterval={setRefreshInterval} />
             </div>
         </>
       );

@@ -1,22 +1,41 @@
 import { useEffect, useState } from "react"
 import React from "react";
-import { getQueueTimeNexus } from "./tbaAPI.tsx";
+import { getMatchTimeNexus, getNexusTimeCollection, getOnDeckTimeNexus, getQueueTimeNexus } from "./tbaAPI.tsx";
+import {useQuery} from "react-query";
 
 export default function Counter({nextMatch, eventKey}) {
+    let [queueTime, setQueueTime] = useState(0);
+    let [onDeckTime, setOnDeckTime] = useState(0);
     let [nextMatchTime, setNextMatchTime] = useState(0);
+    // const {
+    //         data: timesCollection,
+    //         error: timesCollectionError,
+    //         isLoading: timesCollectionLoading
+    //     } = useQuery("timesCollection", () => getNexusTimeCollection(eventKey, (parseInt(nextMatch["matchNumber"])) + 6))
     useEffect(() => {
         async function set() {
-            let time = getQueueTimeNexus(eventKey, (parseInt(nextMatch["matchNumber"])) + 6)
-            // setNextMatchTime(await nextMatch["predictedTime"] - 20 * 60)
-            console.log(await time / 1000)
-            console.log(await nextMatch["predictedTime"])
-            setNextMatchTime(await time);
+            console.log(nextMatch)
+            let times = (await getNexusTimeCollection(eventKey, nextMatch["compLevel"], nextMatch["matchNumber"], nextMatch["setNumber"]));
+            // console.log(timesCollection)
+            // let qTime = getQueueTimeNexus(eventKey, (parseInt(nextMatch["matchNumber"])) + 6)
+            // let odTime = getOnDeckTimeNexus(eventKey, (parseInt(nextMatch["matchNumber"])) + 6)
+            // let nmTime = getMatchTimeNexus(eventKey, (parseInt(nextMatch["matchNumber"])) + 6)
+            // if(!timesCollectionLoading) {
+            //     let times = timesCollection
+                    setQueueTime((times!)["estimatedQueueTime"]);
+                    setOnDeckTime((times!)["estimatedOnDeckTime"]);
+                    setNextMatchTime((times!)["estimatedOnFieldTime"]);
+            // // console.log(times)
+            // }
+
         }
+
+    
         set()
-        updateTimer(nextMatchTime);
-        const counterUpdater = setInterval(() => updateTimer(nextMatchTime), 1000);
+        updateTimer(queueTime ,onDeckTime, nextMatchTime);
+        const counterUpdater = setInterval(() => updateTimer(queueTime, onDeckTime, nextMatchTime), 1000);
         return () => clearInterval(counterUpdater)
-    }, [nextMatch, nextMatchTime]);
+    }, [nextMatch, queueTime, onDeckTime, nextMatchTime]);
     return (
         <div id="counterDiv">
             <p id="queuein">Queue in:</p>
@@ -39,26 +58,40 @@ export function TimeClock() {
     )
 }
 
-export function updateTimer(nextMatchTime) {
-    if(isNaN(nextMatchTime)) {
-        nextMatchTime = 0
+export function updateTimer(queueTime, onDeckTime, matchTime) {
+    console.log(queueTime + " " + onDeckTime + " " + matchTime)
+    if(isNaN(queueTime)) {
+        queueTime = 0
     }
-    let distance = nextMatchTime - (new Date().getTime());
+    let distance = queueTime - (new Date().getTime());
     let hours, minutes, seconds;
     if(distance < 0) {
         // hours = 0;
         // minutes = 0;
         // seconds = 0;
-        distance = (new Date().getTime() - nextMatchTime);
-        hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        minutes = "-" + Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        seconds = "-" + Math.floor((distance % (1000 * 60)) / 1000);
-    }
-    else {
+        if(onDeckTime - (new Date().getTime()) > 0) {
+            document.getElementById("queuein")!.innerHTML = "On deck in:"
+            document.getElementById("queuein")!.style.fontSize = "3em";
+            distance = onDeckTime - (new Date().getTime());
+        }
+        else {
+            document.getElementById("queuein")!.innerHTML = "On field in:"
+            document.getElementById("queuein")!.style.fontSize = "3em";
+
+            distance = matchTime - (new Date().getTime());
+        }
         hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         seconds = Math.floor((distance % (1000 * 60)) / 1000);
     }
+    else {
+        document.getElementById("queuein")!.innerHTML = "Queue in:"
+        document.getElementById("queuein")!.style.fontSize = "2em";
+        hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    }
+    console.log(distance)
 
     if(hours == 0) {
         document.getElementById("counter")!.innerHTML = minutes + "m " + seconds + "s ";

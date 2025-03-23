@@ -183,7 +183,8 @@ export async function getNextTeamMatch(teamKey: string, eventKey: string): Promi
         "compLevel": nextMatch["comp_level"],
         "predictedTime": nextMatch["predicted_time"],
         "blueAlliance": nextMatch["alliances"]["blue"],
-        "redAlliance": nextMatch["alliances"]["red"]
+        "redAlliance": nextMatch["alliances"]["red"],
+        "matchKey": eventKey + "_" + nextMatch["comp_level"] + (nextMatch["compLevel"] !== "qm" ? (nextMatch["set_number"] + "m" + nextMatch["match_number"]) : nextMatch["match_number"])
     }
     return custom;
 }
@@ -231,6 +232,17 @@ export async function getQueueTimeNexus(eventKey: string, matchKey: number) {
     return json["matches"][matchKey]["times"]["estimatedQueueTime"];
 }
 
+export async function getOnDeckTimeNexus(eventKey: string, matchKey: number) {
+    let response = await fetch("https://frc.nexus/api/v1/event/" + eventKey, {
+        headers: {
+          "Nexus-Api-Key": nexusAuth,
+        }
+    });
+    let json = await response.json();
+    console.log(json["matches"][matchKey]["times"]["estimatedOnDeckTime"])
+    return json["matches"][matchKey]["times"]["estimatedOnDeckTime"];
+}
+
 export async function getMatchTimeNexus(eventKey: string, matchKey: number) {
     let response = await fetch("https://frc.nexus/api/v1/event/" + eventKey, {
         headers: {
@@ -239,4 +251,63 @@ export async function getMatchTimeNexus(eventKey: string, matchKey: number) {
     });
     let json = await response.json();
     return json["matches"][matchKey]["times"]["estimatedOnFieldTime"];
+}
+
+export async function getNexusTimeCollection(eventKey: string, compLevel: string, matchKey: number, setNumber: number) {
+    matchKey -= 1;
+    setNumber -= 1;
+    let response = await fetch("https://frc.nexus/api/v1/event/" + eventKey, {
+        headers: {
+          "Nexus-Api-Key": nexusAuth,
+        }
+    });
+    let json = await response.json();
+    let matches = json["matches"]
+    let qms = [];
+    let sem = [];
+    let fin = [];
+    let times = {}
+    for(let i = 0; i < matches.length; i++) {
+        if(matches[i]["label"].indexOf("Qualification") !== -1) {
+            qms.push(matches[i]);
+        }
+        if(matches[i]["label"].indexOf("Playoff") !== -1) {
+            sem.push(matches[i]);
+        }
+        if(matches[i]["label"].indexOf("Final") !== -1) {
+            fin.push(matches[i]);
+        }
+    }
+
+
+
+    switch(compLevel) {
+        case "qm":
+            times = qms[matchKey];
+            break;
+        case "sf":
+            times = sem[setNumber];
+            break;
+        case "fi":
+            times = fin[matchKey];
+            break;
+        default:
+            times = qms[matchKey];
+            break;
+        
+    }
+    console.log(matchKey)
+    console.log(times)
+    // let response: AxiosResponse<any, any> = await axios.get("https://frc.nexus/api/v1/event/" + eventKey, {
+    //     headers: {
+    //         "Nexus-Api-Key": nexusAuth,
+    //     }
+    // })
+    // let clean = {
+    //     estimatedQueueTime: json["matches"][matchKey]["times"]["estimatedQueueTime"],
+    //     estimatedOnDeckTime: json["matches"][matchKey]["times"]["estimatedOnDeckTime"],
+    //     estimatedOnFieldTime: json["matches"][matchKey]["times"]["estimatedOnFieldTime"]
+    // }
+    // return response;
+    return times["times"];
 }

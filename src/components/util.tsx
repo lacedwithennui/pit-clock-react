@@ -112,3 +112,16 @@ export function getWinChances(ourAlliance: string, avgRedRank: number, avgBlueRa
     let redChances = (redChancesRank * 0.1) + (redChancesScore * 0.2) + (redChancesOPR * 0.7)
     return parseFloat((ourAlliance === "Blue" ? blueChances : redChances).toFixed(2));
 }
+
+export async function getWinChancesStatbotics(nextMatch: object) {
+    console.log(nextMatch["matchKey"])
+    let response = fetch("https://api.statbotics.io/v3/match/" + nextMatch["matchKey"], {
+        // mode: "no-cors"
+    });
+    let json = (await response).json();
+    console.log(await json)
+    console.log(((await json)["pred"]["red_win_prob"] * 100) + "%");
+    let redWinChance = ((await json)["pred"]["red_win_prob"] * 100);
+    let blueWinChance = 100 - ((await json)["pred"]["red_win_prob"] * 100)
+    return (nextMatch["allianceColor"] === "Blue" ? blueWinChance : redWinChance)
+}

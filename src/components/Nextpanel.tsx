@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import EventForm from "./EventForm.tsx";
-import { compLevelToShortHumanReadable, getWinChances, simpleAvg, teamOPRLookup, teamRankLookup, teamScoreLookup } from "./util.tsx";
+import { compLevelToShortHumanReadable, getWinChances, getWinChancesStatbotics, simpleAvg, teamOPRLookup, teamRankLookup, teamScoreLookup } from "./util.tsx";
 
 interface NextpanelProps {
     teamKey: string,
+    eventKey: string,
     currentMatch: object,
     nextMatch: object,
     allStatuses: object,
@@ -15,7 +16,7 @@ interface NextpanelProps {
     setEventKey: Function,
     setRefreshInterval: Function
 }
-export default function Nextpanel({teamKey, currentMatch, nextMatch, allStatuses, currentEventMatchLoading, allStatusesLoading, allOPRsLoading, oprs, setTeamKey, setEventKey, setRefreshInterval}: NextpanelProps) {
+export default function Nextpanel({teamKey, eventKey, currentMatch, nextMatch, allStatuses, currentEventMatchLoading, allStatusesLoading, allOPRsLoading, oprs, setTeamKey, setEventKey, setRefreshInterval}: NextpanelProps) {
     let matchNum = currentEventMatchLoading ? 0 : ((currentMatch["set_number"] === undefined || currentMatch["set_number"] === null || currentMatch["set_number"] === 1) ? currentMatch["match_number"] : currentMatch["set_number"]);
     let bumperClass = nextMatch["bumperClass"];
     const [rankRatioJSX, setRankRatioJSX] = useState(<></>);
@@ -77,22 +78,22 @@ export default function Nextpanel({teamKey, currentMatch, nextMatch, allStatuses
                     </span>
                 </p>
             );
-            setWinChances(getWinChances((await nextMatch)["allianceColor"], simpleAvg(redRanks), simpleAvg(blueRanks), simpleAvg(redScores), simpleAvg(blueScores), redOPRSum, blueOPRSum, Object.keys(allStatuses).length))
+            setWinChances(await getWinChancesStatbotics(nextMatch))//getWinChances((await nextMatch)["allianceColor"], simpleAvg(redRanks), simpleAvg(blueRanks), simpleAvg(redScores), simpleAvg(blueScores), redOPRSum, blueOPRSum, Object.keys(allStatuses).length))
         }
         set();
-    }, [nextMatch, allStatuses, oprs])
+    }, [nextMatch, allStatuses, oprs, winChances])
     return ((allOPRsLoading || allStatusesLoading || currentEventMatchLoading) ? <EventForm setTeamKey={setTeamKey} setEventKey={setEventKey} setRefreshInterval={setRefreshInterval} /> :
         <>
             <div>
                 <div id="nextpanel">
-                    <p className='nextpanel'>Current Match In Play: {compLevelToShortHumanReadable(currentMatch["comp_level"])} {matchNum}</p>
+                    <p className='nextpanel'>Current Match In Play: {compLevelToShortHumanReadable(currentMatch["comp_level"])} {matchNum + 1}</p>
                     <p className='nextpanel'>Next Match: {compLevelToShortHumanReadable(nextMatch["compLevel"])} {(nextMatch["setNumber"] === 1 ? nextMatch["matchNumber"] : nextMatch["setNumber"])}</p>
                     <p className="nextpanel">Station: {nextMatch["allianceStation"]}</p>
                     <p id="bumper" className={bumperClass}>{teamKey.replace("frc", "")}</p>
                     {oprSumJSX}
                     {rankRatioJSX}
                     {scoreRatioJSX}
-                    <p>Win Chances: {winChances}%</p>
+                    <p>Win Chances: {winChances === 0 ? "Loading..." : ((winChances).toFixed(2) + "%")}</p>
                 </div>
                 <EventForm setTeamKey={setTeamKey} setEventKey={setEventKey} setRefreshInterval={setRefreshInterval} />
             </div>

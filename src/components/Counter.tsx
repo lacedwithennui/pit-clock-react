@@ -14,7 +14,6 @@ export default function Counter({nextMatch, eventKey}) {
     //     } = useQuery("timesCollection", () => getNexusTimeCollection(eventKey, (parseInt(nextMatch["matchNumber"])) + 6))
     useEffect(() => {
         async function set() {
-            console.log(nextMatch)
             let times = (await getNexusTimeCollection(eventKey, nextMatch["compLevel"], nextMatch["matchNumber"], nextMatch["setNumber"]));
             // console.log(timesCollection)
             // let qTime = getQueueTimeNexus(eventKey, (parseInt(nextMatch["matchNumber"])) + 6)
@@ -58,8 +57,7 @@ export function TimeClock() {
     )
 }
 
-export function updateTimer(queueTime, onDeckTime, matchTime) {
-    console.log(queueTime + " " + onDeckTime + " " + matchTime)
+export function updateTimer(queueTime: number, onDeckTime: number, matchTime: number) {
     if(isNaN(queueTime)) {
         queueTime = 0
     }
@@ -91,13 +89,15 @@ export function updateTimer(queueTime, onDeckTime, matchTime) {
         minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         seconds = Math.floor((distance % (1000 * 60)) / 1000);
     }
-    console.log(distance)
 
-    if(hours == 0) {
+    if(hours === 0 && minutes === 0) {
+        document.getElementById("counter")!.innerHTML = seconds + "s ";
+    }
+    else if(hours === 0) {
         document.getElementById("counter")!.innerHTML = minutes + "m " + seconds + "s ";
     }
-    if(minutes == 0) {
-        document.getElementById("counter")!.innerHTML = seconds + "s ";
+    else {
+        document.getElementById("counter")!.innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
     }
 
     let timeString = new Date().toLocaleTimeString()

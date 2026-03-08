@@ -61,13 +61,11 @@ export function updateTimer(queueTime: number, onDeckTime: number, matchTime: nu
     if(isNaN(queueTime)) {
         queueTime = 0
     }
+    queueTime = Math.round(queueTime);
     let distance = queueTime - (new Date().getTime());
     let hours, minutes, seconds;
     if(distance < 0) {
-        // hours = 0;
-        // minutes = 0;
-        // seconds = 0;
-        if(onDeckTime - (new Date().getTime()) > 0) {
+        if(Math.round(onDeckTime - (new Date().getTime())) > 0) {
             document.getElementById("queuein")!.innerHTML = "On deck in:"
             document.getElementById("queuein")!.style.fontSize = "3em";
             distance = onDeckTime - (new Date().getTime());

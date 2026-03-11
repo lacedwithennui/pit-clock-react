@@ -19,19 +19,22 @@ export default function RightSidebar() {
             errorContext.showError(eventQuery.error.message);
             return <p className="message">Error getting queueing information.</p>
         }
+        else if(eventQuery.data!.matches.length === 0) {
+            return (
+                <p className="message">No queueing information has been posted yet.</p>
+            )
+        }
         else {
             const teamMatches = filterTeamMatches(teamNumber, eventQuery.data!);
-            if(eventQuery.data!.matches.length === 0) {
-                return (
-                    <p className="message">No queueing information has been posted yet.</p>
-                )
-            }
-            else if(eventQuery.data!.matches.length !== 0 && teamMatches.length === 0) {
+
+            if(teamMatches.length === 0) {
                 return (
                     <p className="message">A match schedule was found, but team {teamNumber} was not in the queueing information. Is your team number correct?</p>
                 )
             }
+
             const nextMatch = getNextTeamMatch(teamMatches);
+            
             return (
                 <>
                     <p>Current Match in Play:<br />{getCurrentEventMatch(eventQuery.data!.matches!).label}</p>

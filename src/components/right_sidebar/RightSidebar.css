@@ -11,7 +11,7 @@
     padding: 4rem 0px;
     color: white;
     font-weight: 900;
-    font-size: 3.5rem;
+    font-size: 4rem;
     background-color: var(--purple);
 }
 
@@ -25,7 +25,7 @@
 
 .timeClock h1 {
     margin: 0.5rem;
-    font-size: 4rem;
+    font-size: 3.5rem;
 }
 
 .timeClock h2 {

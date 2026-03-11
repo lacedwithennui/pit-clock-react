@@ -1,3 +1,24 @@
+export type FIRSTEventObject = {
+    address: string;
+    website: string;
+    webcasts: string[];
+    timezone: string;
+    code: string;
+    divisionCode: string;
+    name: string;
+    type: string;
+    districtCode: string;
+    venue: string;
+    city: string;
+    stateprov: string;
+    country: string;
+    dateStart: string;
+    dateEnd: string;
+};
+export type FIRSTEventsObject = {
+    Events: FIRSTEventObject[];
+}
+
 export type TimesObject = {
     estimatedQueueTime: number;
     estimatedOnDeckTime: number;
@@ -25,7 +46,7 @@ export type PartsRequestObject = {
     parts: string;
     requestedByTeam: string;
 };
-export type EventObject = {
+export type QueueEventObject = {
     eventKey: `${number}${string}`;
     dataAsOfTime: number;
     nowQueuing: string;

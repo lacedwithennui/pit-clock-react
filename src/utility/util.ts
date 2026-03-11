@@ -1,4 +1,4 @@
-import type { EventObject, MatchObject, RankingObject, RankingsObject, RankMap } from "./dataTypes.ts";
+import type { QueueEventObject, MatchObject, RankingObject, RankingsObject, RankMap } from "./dataTypes.ts";
 
 export function formatCountdown(currentTime: Date, nextQueueTime: Date, nextOnDeckTime: Date, nextOnFieldTime: Date): {countdownLabel: string, countdownValue: string} {
     const queueDifference = nextQueueTime.getTime() - currentTime.getTime();
@@ -44,7 +44,7 @@ export function formatCountdown(currentTime: Date, nextQueueTime: Date, nextOnDe
     };
 }
 
-export function filterTeamMatches(teamNumber: number, event: EventObject): MatchObject[] {
+export function filterTeamMatches(teamNumber: number, event: QueueEventObject): MatchObject[] {
     return event.matches.filter((match) => match.redTeams.includes(teamNumber.toString()) || match.blueTeams.includes(teamNumber.toString()));
 }
 
@@ -72,10 +72,6 @@ export function getTeamAllianceStation(teamNumber: number, match: MatchObject): 
 
 export function getCurrentEventMatch(matches: MatchObject[]): MatchObject {
     return matches.findLast((match) => match.status === "On field") || matches[0];
-}
-
-export function sortRankings(rankings: RankingsObject): RankingsObject {
-    return {Rankings: rankings.Rankings.sort((a, b) => a.rank - b.rank)}
 }
 
 export function getRankingsMap(rankings: RankingsObject): RankMap {

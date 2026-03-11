@@ -1,0 +1,29 @@
+.results {
+    display: flex;
+    flex-direction: column;
+}
+
+.results .firstEvent {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0.5rem 0px;
+}
+
+.results .firstEvent:nth-child(even) {
+    background-color: #efefef;
+}
+
+.results .firstEvent div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.results .firstEvent a {
+    background-color: #eeeeee;
+    padding: 1rem;
+    text-decoration: none;
+    color: #000000;
+    margin: 0.25rem;
+}

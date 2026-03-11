@@ -1,0 +1,37 @@
+.rightSidebar p:not(.message) {
+    font-size: 1.2rem;
+    margin: 0.25rem;
+    font-weight: 600;
+}
+
+.rightSidebar .bumperPreview {
+    margin: 0.5rem 0px;
+    text-align: center;
+    width: 100%;
+    padding: 4rem 0px;
+    color: white;
+    font-weight: 900;
+    font-size: 3.5rem;
+    background-color: var(--purple);
+}
+
+.rightSidebar .bumperPreview.blueMatch {
+    background-color: var(--tr-blue);
+}
+
+.rightSidebar .bumperPreview.redMatch {
+    background-color: var(--tr-red);
+}
+
+.timeClock h1 {
+    margin: 0.5rem;
+    font-size: 4rem;
+}
+
+.timeClock h2 {
+    margin: 0.5rem;
+}
+
+.rightSidebar .timeClock {
+    text-align: center;
+}

@@ -1,0 +1,46 @@
+:root {
+    --first-blue: #0066b3;
+    --first-red: #ed1c24;
+    --purple: #77416c;
+    --tr-blue: #2a397c;
+    --tr-red: #be2026;
+}
+
+body {
+    margin: 0px;
+    width: 100vw;
+    height: 100vh;
+}
+
+#root {
+    width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    padding: 0.5rem;
+    box-sizing: border-box;
+}
+
+#root * {
+    font-family: 'Montserrat', sans-serif;
+}
+
+.errorModal {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    min-width: 15vw;
+    box-shadow: 2px 2px 2px #eeeeee;
+    border-radius: 10px;
+    border: 1px #eeeeee solid;
+    padding: 1rem;
+}
+
+.errorModal h3 {
+    margin-top: 0px;
+}
+
+.errorModal button {
+    background-color: #eeeeee;
+    border-radius: 5px;
+    border: 1px #dddddd solid;
+}

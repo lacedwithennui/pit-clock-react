@@ -1,0 +1,53 @@
+.countdownClock h2 {
+    margin: 0.5rem;
+    font-size: 1.5rem;
+}
+
+.countdownClock h1 {
+    margin: 0.5rem;
+    font-size: 4rem;
+}
+
+.matchSchedule {
+    display: flex;
+    width: 100%;
+}
+
+.matchSchedule table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.matchSchedule table tbody tr {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.matchSchedule .teamNumber {
+    font-weight: 700;
+}
+
+.matchSchedule td.blueMatch .teamNumber {
+    color: var(--first-blue);
+    font-weight: 900;
+}
+
+.matchSchedule td.redMatch .teamNumber {
+    color: var(--first-red);
+    font-weight: 900;
+}
+
+.matchSchedule .teamRank {
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.matchSchedule table tbody tr:nth-child(even) {
+    background-color: #efefef;
+}
+
+.matchSchedule table tbody tr td > * {
+    display: flex;
+    flex-direction: column;
+    padding: 0.05rem;
+}

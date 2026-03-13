@@ -17,7 +17,7 @@ export type FIRSTEventObject = {
 };
 export type FIRSTEventsObject = {
     Events: FIRSTEventObject[];
-}
+};
 
 export type TimesObject = {
     estimatedQueueTime: number;
@@ -28,7 +28,7 @@ export type TimesObject = {
     actualOnDeckTime: number;
     actualOnFieldTime: number;
 };
-export type MatchObject = {
+export type QueueMatchObject = {
     label: string;
     status: string;
     redTeams: string[];
@@ -50,7 +50,7 @@ export type QueueEventObject = {
     eventKey: `${number}${string}`;
     dataAsOfTime: number;
     nowQueuing: string;
-    matches: MatchObject[];
+    matches: QueueMatchObject[];
     announcements: AnnouncementObject[];
     partsRequests: PartsRequestObject[];
 };
@@ -75,3 +75,26 @@ export type RankingsObject = {
     Rankings: RankingObject[];
 };
 export type RankMap = Map<number, number>;
+
+export type FIRSTMatchTeamObject = {
+    teamNumber: number;
+    station: `${"Red" | "Blue"}${number}`;
+    dq: false;
+};
+export type FIRSTMatchObject = {
+    actualStartTime: string;
+    tournamentLevel: string;
+    postResultTime: string;
+    description: string;
+    matchNumber: number;
+    scoreRedFinal: number;
+    scoreRedFoul: number;
+    scoreRedAuto: number;
+    scoreBlueFinal: number;
+    scoreBlueFoul: number;
+    scoreBlueAuto: number;
+    teams: FIRSTMatchTeamObject[];
+};
+export type FIRSTMatchesObject = {
+    Matches: FIRSTMatchObject[]
+}

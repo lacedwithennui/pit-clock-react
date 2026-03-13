@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import type {FIRSTEventsObject, QueueEventObject, RankingsObject} from "./dataTypes.ts";
+import type {FIRSTEventsObject, FIRSTMatchesObject, QueueEventObject, RankingsObject} from "./dataTypes.ts";
 
 const NEXUS_AUTH_TOKEN = import.meta.env.VITE_NEXUS_AUTH_TOKEN;
 const FIRST_USERNAME = import.meta.env.VITE_FIRST_USERNAME;
@@ -25,7 +25,7 @@ function getEventsFIRST(season: string, teamNumber: number): Promise<FIRSTEvents
             }
             throw new Error(`A server error occurred when requesting event rankings from FIRST.`);
         }
-    )
+    );
 }
 
 function getEventNexus(season: string, eventCode: string): Promise<QueueEventObject> {
@@ -73,6 +73,30 @@ function getRankingsFIRST(season: string, eventCode: string): Promise<RankingsOb
     );
 }
 
+function getMatchResultsFIRST(season: string, eventCode: string, teamNumber: number): Promise<FIRSTMatchesObject> {
+    return fetch(`${FIRST_BASE_ADDRESS}/${season}/matches/${eventCode}?teamNumber=${teamNumber}`, {
+        headers: {
+            "Authorization": `Basic ${btoa(`${FIRST_USERNAME}:${FIRST_AUTH_TOKEN}`)}`
+        }
+    }).then(
+        (response) => {
+            if(response.ok) {
+                return response.json();
+            }
+            else if(response.status === 400) {
+                throw new Error(`Malformed request when requesting match results from FIRST. Make sure the season "${season}" is correct.`);
+            }
+            else if(response.status === 404) {
+                throw new Error(`Event code "${eventCode}" not found when requesting match results from FIRST.`);
+            }
+            else if(response.status === 401) {
+                throw new Error(`Authentication error returned when requesting match results from FIRST.`);
+            }
+            throw new Error(`A server error occurred when requesting match results from FIRST.`);
+        }
+    );
+}
+
 export function useEvents(season: string, teamNumber: number) {
     return useQuery({queryKey: ["getEventsFIRST", season, teamNumber], queryFn: () => getEventsFIRST(season, teamNumber), refetchOnWindowFocus: false, enabled: !!teamNumber});
 }
@@ -82,5 +106,9 @@ export function useEvent(season: string, eventCode: string) {
 }
 
 export function useRankings(season: string, eventCode: string) {
-    return useQuery({queryKey: ["getRankingsFIRST"], queryFn: () => getRankingsFIRST(season, eventCode), refetchOnWindowFocus: false, refetchInterval: 60000});
+    return useQuery({queryKey: ["getRankingsFIRST"], queryFn: () => getRankingsFIRST(season, eventCode), refetchOnWindowFocus: false, refetchInterval: 30000});
+}
+
+export function useMatchResults(season: string, eventCode: string, teamNumber: number) {
+    return useQuery({queryKey: ["getMatchResultsFIRST"], queryFn: () => getMatchResultsFIRST(season, eventCode, teamNumber), refetchOnWindowFocus: false, refetchInterval: 30000});
 }

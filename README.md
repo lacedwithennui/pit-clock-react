@@ -1,28 +1,17 @@
 # About: #
-This is a countdown clock for your competition pit. It will count down to FIRST's predicted time of your next match, using data from The Blue Alliance's APIv3. The latest release can be found deployed at <a href="https://clock.parkerdaletech.com" target="_blank">clock.parkerdaletech.com</a>. Notable features of this clock include:
-* a list of all teams' ranks for the event in the sidebar
-* your full match schedule with predicted times, both alliances & their ranks, and what alliance color you are
+This is a countdown clock for your competition pit. It will count down to FIRST's predicted time of your next match, using data from the Nexus API. The latest release can be found deployed at <https://clock.hpbelmont.com>. Notable features of this clock include:
 * a countdown timer for your next match
+* your full match schedule with predicted times, both alliances & their ranks, and what alliance color you are
 * big "next match" panel that shows your bumper color and alliance position for your next match
+* a list of all teams' ranks for the event in the sidebar
 * the current/latest match being played
-* win predictor based on OPR, the average match score of each alliance, and the average rank of each alliance
-* auto refresh every minute to account for scheduling/delay changes, as well as to update the next match after your team has played
-* automatic system time zone detection for traveling teams
+* auto refresh every 30 seconds to account for schedule changes
 
-# How to add credentials: #
-Make a new json file called tba-authkey.json in the /src/assets/tokens folder that contains the following:
-```
-"tba_apiKey"
-```
-where tba_apiKey is your APIv3 key from The Blue Alliance.
-
-# How to use the input screen: #
-Put in your team number or team key (eg. 5587 or frc5587), and your event key. Your event key is part of the TBA link for your event (eg. 2024vaash). You can always come back to the input screen if you need to by clicking the link on the right-hand side of the main 
-pit clock screen.
+# How to use the pit clock: #
+On the homepage (<https://clock.hpbelmont.com>), type in your team number and click "Search." This will search for events that your team is registered for this season, and you can navigate to the pit clock or rankings page for any of these events.
 
 # How to set up a local instance: #
-Install node.js, clone this project and navigate to the folder in a code editor of your choice. Then you can simply run `npm i`, 
+Install node.js, clone this project and navigate to the folder in a code editor of your choice. Rename `.env.example` to `.env.local`,
+then fill in your Nexus API token, FIRST API username, and FIRST API token. Then you can simply run `npm i`, 
 `npm run build`, and `serve -s build -l 3000` to start the local instance. You can open the page in any browser by navigating to 
-`http://localhost:3000`. If you are running a development environment with `npm run start`, please note that the error overlay is
-turned off in the styles, and you can turn it back on by finding shared.scss and commenting out the iframe display properties at
-the top of the file.
+`http://localhost:3000`.

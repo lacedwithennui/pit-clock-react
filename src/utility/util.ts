@@ -1,4 +1,4 @@
-import type { QueueEventObject, MatchObject, RankingObject, RankingsObject, RankMap } from "./dataTypes.ts";
+import type { QueueEventObject, QueueMatchObject, RankingObject, RankingsObject, RankMap, FIRSTEventsObject, FIRSTMatchObject } from "./dataTypes.ts";
 
 export function formatCountdown(currentTime: Date, nextQueueTime: Date, nextOnDeckTime: Date, nextOnFieldTime: Date): {countdownLabel: string, countdownValue: string} {
     const queueDifference = nextQueueTime.getTime() - currentTime.getTime();
@@ -44,19 +44,30 @@ export function formatCountdown(currentTime: Date, nextQueueTime: Date, nextOnDe
     };
 }
 
-export function filterTeamMatches(teamNumber: number, event: QueueEventObject): MatchObject[] {
+export function sortEvents(events: FIRSTEventsObject): FIRSTEventsObject {
+    return {Events: events.Events.sort((a, b) => {
+        const now = new Date();
+        return (new Date(a.dateStart).getTime() - now.getTime()) - (new Date(b.dateStart).getTime() - now.getTime());
+    })}
+}
+
+export function filterTeamMatches(teamNumber: number, event: QueueEventObject): QueueMatchObject[] {
     return event.matches.filter((match) => match.redTeams.includes(teamNumber.toString()) || match.blueTeams.includes(teamNumber.toString()));
 }
 
-export function getNextTeamMatch(matches: MatchObject[]): MatchObject {
+export function getNextTeamMatch(matches: QueueMatchObject[]): QueueMatchObject {
     return matches.find((match) => match.status !== "On field") || matches.at(-1)!;
 }
 
-export function getTeamAllianceClassName(teamNumber: number, match: MatchObject): "blueMatch" | "redMatch" | "" {
+export function getTeamAllianceClassName(teamNumber: number, match: QueueMatchObject): "blueMatch" | "redMatch" | "" {
     return match.blueTeams.includes(teamNumber.toString()) ? "blueMatch" : (match.redTeams.includes(teamNumber.toString()) ? "redMatch" : "");
 }
 
-export function getTeamAllianceStation(teamNumber: number, match: MatchObject): string {
+export function getTeamAllianceColor(teamNumber: number, match: QueueMatchObject): "Blue" | "Red" | "" {
+    return match.blueTeams.includes(teamNumber.toString()) ? "Blue" : (match.redTeams.includes(teamNumber.toString()) ? "Red" : "");
+}
+
+export function getTeamAllianceStation(teamNumber: number, match: QueueMatchObject): string {
     for(let i = 0; i < match.blueTeams.length; i++) {
         if(match.blueTeams[i] === teamNumber.toString()) {
             return `Blue ${i + 1}`;
@@ -70,7 +81,7 @@ export function getTeamAllianceStation(teamNumber: number, match: MatchObject): 
     return "Not found";
 }
 
-export function getCurrentEventMatch(matches: MatchObject[]): MatchObject {
+export function getCurrentEventMatch(matches: QueueMatchObject[]): QueueMatchObject {
     return matches.findLast((match) => match.status === "On field") || matches[0];
 }
 
@@ -93,4 +104,8 @@ export function getTeamRankingObject(teamNumber: number, rankings: RankingsObjec
 
 export function getRecordString(ranking: RankingObject): string {
     return `${ranking.wins}-${ranking.losses}-${ranking.ties}`;
+}
+
+export function getMatchWinner(match: FIRSTMatchObject): "Blue" | "Red" | "Tie" {
+    return match.scoreBlueFinal === match.scoreRedFinal ? "Tie" : (match.scoreBlueFinal > match.scoreRedFinal ? "Blue" : "Red");
 }

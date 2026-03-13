@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useRankings } from "../../utility/api.ts";
 import { getTeamRankingObject } from "../../utility/util.ts";
 import { useError } from "../ErrorContext.tsx";
-import AllRankings from "./AllRankings.tsx";
+import AllRankings from "../AllRankings.tsx";
 import "./LeftSidebar.css";
 import TeamRanking from "./TeamRanking.tsx";
 

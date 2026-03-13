@@ -7,12 +7,14 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin: 0.5rem 0px;
+    padding: 0.5rem 0px;
+    /* border-top: 1px solid #eeeeee; */
+    border-bottom: 1px solid #eeeeee;
 }
 
-.results .firstEvent:nth-child(even) {
+/* .results .firstEvent:nth-child(even) {
     background-color: #efefef;
-}
+} */
 
 .results .firstEvent div {
     display: flex;
@@ -26,4 +28,5 @@
     text-decoration: none;
     color: #000000;
     margin: 0.25rem;
+    border-radius: 10px;
 }

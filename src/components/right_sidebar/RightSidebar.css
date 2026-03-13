@@ -22,16 +22,3 @@
 .rightSidebar .bumperPreview.redMatch {
     background-color: var(--tr-red);
 }
-
-.timeClock h1 {
-    margin: 0.5rem;
-    font-size: 3.5rem;
-}
-
-.timeClock h2 {
-    margin: 0.5rem;
-}
-
-.rightSidebar .timeClock {
-    text-align: center;
-}

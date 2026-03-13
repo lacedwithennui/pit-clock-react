@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEvent, useRankings } from "../../utility/api.ts";
 import { filterTeamMatches, getNextTeamMatch, getRankingsMap } from "../../utility/util.ts";
 import { useError } from "../ErrorContext.tsx";
-import TimeClock from "../right_sidebar/TimeClock.tsx";
+import TimeClock from "../TimeClock.tsx";
 import "./Center.css";
 import Countdown from "./Countdown.tsx";
 import MatchSchedule from "./MatchSchedule.tsx";
@@ -15,7 +15,7 @@ export default function Center() {
     const rankingsQuery = useRankings(params.season!, params.eventCode!);
 
     function conditionalRender() {
-        if(eventQuery.isLoading) {
+        if(eventQuery.isLoading || !eventQuery.data) {
             return <p>Loading...</p>
         }
         else if(eventQuery.error) {

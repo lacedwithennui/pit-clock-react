@@ -24,23 +24,6 @@ body {
     font-family: 'Montserrat', sans-serif;
 }
 
-.errorModal {
-    position: fixed;
-    bottom: 1rem;
-    right: 1rem;
-    min-width: 15vw;
-    box-shadow: 2px 2px 2px #eeeeee;
-    border-radius: 10px;
-    border: 1px #eeeeee solid;
-    padding: 1rem;
-}
-
-.errorModal h3 {
-    margin-top: 0px;
-}
-
-.errorModal button {
-    background-color: #eeeeee;
-    border-radius: 5px;
-    border: 1px #dddddd solid;
+button {
+    cursor: pointer;
 }

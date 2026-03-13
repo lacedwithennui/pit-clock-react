@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect x="0" y="448" width="512" height="64" rx="32" ry="32"/>
+  <rect x="-224" y="224" width="512" height="64" rx="32" ry="32" transform="translate(-224 288) rotate(-90)"/>
+  <rect x="270.0707" y="121.0562" width="64" height="173.0362" rx="32" ry="32" transform="translate(662.4441 140.7553) rotate(135)"/>
+  <rect x="115.5417" y="88.6496" width="64" height="391.6233" rx="32" ry="32" transform="translate(244.3585 -21.011) rotate(45)"/>
+  <rect x="378.4207" y="46.3131" width="64" height="260.2153" rx="32" ry="32" transform="translate(244.9578 -238.5389) rotate(45)"/>
+</svg>

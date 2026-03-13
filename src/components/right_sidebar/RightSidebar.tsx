@@ -3,7 +3,7 @@ import { useEvent } from "../../utility/api.ts";
 import { filterTeamMatches, getCurrentEventMatch, getNextTeamMatch, getTeamAllianceClassName, getTeamAllianceStation } from "../../utility/util.ts";
 import { useError } from "../ErrorContext.tsx";
 import "./RightSidebar.css";
-import TimeClock from "./TimeClock.tsx";
+import TimeClock from "../TimeClock.tsx";
 
 export default function RightSidebar() {
     const errorContext = useError();

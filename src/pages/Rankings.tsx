@@ -1,8 +1,9 @@
 import { useParams } from "react-router-dom";
 import { useRankings } from "../utility/api.ts";
 import { useError } from "../components/ErrorContext.tsx";
-import AllRankings from "../components/left_sidebar/AllRankings.tsx";
+import AllRankings from "../components/AllRankings.tsx";
 import "./Rankings.css";
+import Links from "../components/Links.tsx";
 
 export default function Rankings() {
     const errorContext = useError();
@@ -28,6 +29,7 @@ export default function Rankings() {
     return (
         <div className="rankings">
             {conditionalRender()}
+            <Links />
         </div>
     );
 }

@@ -3,27 +3,8 @@
     margin-bottom: 1rem;
 }
 
-.allRankings {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    max-height: 87%;
-}
 
-.allRankings p {
-    width: 50%;
-    text-wrap: nowrap;
-}
-
-.allRankings p.blueMatch {
-    color: var(--first-blue);
-}
-
-.allRankings p.redMatch {
-    color: var(--first-red);
-}
-
-.teamRanking p, .allRankings p {
+.teamRanking p {
     font-size: 1.2rem;
     margin: 0.25rem;
     font-weight: 600;

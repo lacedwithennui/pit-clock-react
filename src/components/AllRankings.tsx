@@ -1,5 +1,5 @@
-import type { RankingsObject } from "../../utility/dataTypes.ts";
-import { getRecordString } from "../../utility/util.ts";
+import type { RankingsObject } from "../utility/dataTypes.ts";
+import { getRecordString } from "../utility/util.ts";
 
 export default function AllRankings({rankings, detailView = false, highlightTeamNumber}: {rankings: RankingsObject, detailView?: boolean, highlightTeamNumber?: number}) {
     return (

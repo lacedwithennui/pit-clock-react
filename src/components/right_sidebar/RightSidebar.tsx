@@ -1,9 +1,10 @@
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useEvent } from "../../utility/api.ts";
 import { filterTeamMatches, getCurrentEventMatch, getNextTeamMatch, getTeamAllianceClassName, getTeamAllianceStation } from "../../utility/util.ts";
 import { useError } from "../ErrorContext.tsx";
-import "./RightSidebar.css";
 import TimeClock from "../TimeClock.tsx";
+import "./RightSidebar.css";
 
 export default function RightSidebar() {
     const errorContext = useError();
@@ -11,12 +12,17 @@ export default function RightSidebar() {
     const teamNumber = +params.teamNumber!;
     const eventQuery = useEvent(params.season!, params.eventCode!);
     
+    useEffect(() => {
+        if(eventQuery.error) {
+            errorContext.showError(eventQuery.error.message);
+        }
+    }, [eventQuery.error, errorContext])
+
     function conditionalRender() {
         if(eventQuery.isLoading) {
             return <p className="message">Loading...</p>
         }
         else if(eventQuery.error) {
-            errorContext.showError(eventQuery.error.message);
             return <p className="message">Error getting queueing information.</p>
         }
         else if(eventQuery.data!.matches.length === 0) {

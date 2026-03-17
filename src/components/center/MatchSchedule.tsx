@@ -23,13 +23,12 @@ export default function MatchSchedule({matches, rankMap}: {matches: QueueMatchOb
                     </tr>
                 </thead>
                 <tbody>
-                    {(() => {
-                        if(matchResultsQuery.isLoading || !matchResultsQuery.data) {
-                            return matches.map((match) => (
-                                <MatchRow key={match.label} match={match} teamNumber={+params.teamNumber!} rankMap={rankMap} />
-                            ));
-                        }
-                        return matches.map((match) => (
+                    {matchResultsQuery.isLoading || !matchResultsQuery.data
+                        ? matches.map((match) => {console.log(matchResultsQuery.isLoading); return (
+                            
+                            <MatchRow key={match.label} match={match} teamNumber={+params.teamNumber!} rankMap={rankMap} />
+                        )})
+                        : matches.map((match) => (
                             <MatchRow
                                 key={match.label}
                                 match={match}
@@ -42,8 +41,8 @@ export default function MatchSchedule({matches, rankMap}: {matches: QueueMatchOb
                                         (queryMatch.description === "Final Tiebreaker" && match.label === "Final 3")
                                 )}
                             />
-                        ));
-                    })()}
+                        ))
+                    }
                 </tbody>
             </table>
             {/* <button onClick={() => queryClient.invalidateQueries({queryKey: ["getEventNexus"]})}>Refresh</button> */}

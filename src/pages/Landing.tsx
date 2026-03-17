@@ -3,8 +3,8 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import { useError } from "../components/ErrorContext.tsx";
 import { useEvents } from "../utility/api.ts";
-import "./Landing.css";
 import { sortEvents } from "../utility/util.ts";
+import "./Landing.css";
 
 export default function Landing() {
     const [inputValue, setInputValue] = useState("");
@@ -14,7 +14,7 @@ export default function Landing() {
     const currentYear = new Date().getFullYear().toString();
     const errorContext = useError();
     const eventsQuery = useEvents(currentYear, +submittedTeam);
-    const [_, setCookies] = useCookies(["team-number"]);
+    const [cookies, setCookies] = useCookies(["team-number"]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -35,6 +35,18 @@ export default function Landing() {
         }
     }, [luckyMode, eventsQuery.data, submittedTeam]);
 
+    useEffect(() => {
+        if(cookies["team-number"] && +inputValue !== +cookies["team-number"]) {
+            setInputValue(cookies["team-number"]);
+        }
+    }, [cookies])
+
+    useEffect(() => {
+        if(eventsQuery.error) {
+            errorContext.showError(eventsQuery.error.message);
+        }
+    }, [eventsQuery.error, errorContext])
+
     function handleSearch() {
         setLuckyMode(false);
         setSubmittedTeam(inputValue);
@@ -52,7 +64,6 @@ export default function Landing() {
             return <p className="message">Loading...</p>
         }
         else if(eventsQuery.error) {
-            errorContext.showError(eventsQuery.error.message);
             return <p className="message">Error getting events.</p>
         }
         else if(!eventsQuery.isFetched || !eventsQuery.data) {
@@ -86,17 +97,22 @@ export default function Landing() {
 
     return (
         <div className="landing">
-            <div className="searchBox">
+            <div className="search">
                 <h2>Search for events with your team number:</h2>
-                <input
-                    name="team-number"
-                    type="text" 
-                    value={inputValue}
-                    onChange={(event) => setInputValue(event.target.value)}
-                    placeholder="5587" 
-                />
-                <button onClick={handleSearch}>Search</button>
-                <button onClick={handleLucky}>I'm Feeling Lucky</button>
+                <div>
+                    <div className="searchBox">
+                        <input
+                            name="team-number"
+                            type="text" 
+                            value={inputValue}
+                            onKeyUp={(event) => {if(event.key === "Enter") {handleSearch()}}}
+                            onChange={(event) => setInputValue(event.target.value)}
+                            placeholder="5587" 
+                        />
+                        <button className="searchButton" onClick={handleSearch}><img src="/search-icon.svg" alt="search icon" /></button>
+                    </div>
+                    <button className="luckyButton" onClick={handleLucky}>I'm Feeling Lucky</button>
+                </div>
             </div>
 
             <div className="results">

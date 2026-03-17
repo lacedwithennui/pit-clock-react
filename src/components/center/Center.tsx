@@ -1,11 +1,12 @@
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useEvent, useRankings } from "../../utility/api.ts";
 import { filterTeamMatches, getNextTeamMatch, getRankingsMap } from "../../utility/util.ts";
 import { useError } from "../ErrorContext.tsx";
 import TimeClock from "../TimeClock.tsx";
-import "./Center.css";
 import Countdown from "./Countdown.tsx";
 import MatchSchedule from "./MatchSchedule.tsx";
+import "./Center.css";
 
 export default function Center() {
     const errorContext = useError();
@@ -14,12 +15,17 @@ export default function Center() {
     const eventQuery = useEvent(params.season!, params.eventCode!);
     const rankingsQuery = useRankings(params.season!, params.eventCode!);
 
+    useEffect(() => {
+        if(eventQuery.error) {
+            errorContext.showError(eventQuery.error.message);
+        }
+    }, [eventQuery.error, errorContext])
+
     function conditionalRender() {
         if(eventQuery.isLoading || !eventQuery.data) {
             return <p>Loading...</p>
         }
         else if(eventQuery.error) {
-            errorContext.showError(eventQuery.error.message);
             return (
                 <>
                     <p className="message">Error getting match schedule.</p>

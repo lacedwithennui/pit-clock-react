@@ -1,3 +1,54 @@
+.search > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.searchBox {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 2.5rem;
+    border-radius: 1.5rem;
+}
+
+.searchBox input {
+    height: 100%;
+    border: 2px solid #eeeeee;
+    border-radius: 1.5rem;
+    padding: 0px 1.5rem;
+    font-size: 1rem;
+}
+
+.searchBox .searchButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 0.5rem;
+    box-sizing: content-box;
+    width: 10px;
+    height: 10px;
+    padding: 5px;
+    border: 1px solid #eeeeee;
+    border-radius: 100px;
+    background-color: transparent;
+}
+
+.searchBox .searchButton img {
+    width: 10px;
+    height: 10px;
+}
+
+.search .luckyButton {
+    background-color: transparent;
+    height: 2rem;
+    padding: 0px 0.5rem;
+    border-radius: 1rem;
+    border: 2px solid #eeeeee;
+}
+
 .results {
     display: flex;
     flex-direction: column;
@@ -8,13 +59,8 @@
     flex-direction: row;
     justify-content: space-between;
     padding: 0.5rem 0px;
-    /* border-top: 1px solid #eeeeee; */
     border-bottom: 1px solid #eeeeee;
 }
-
-/* .results .firstEvent:nth-child(even) {
-    background-color: #efefef;
-} */
 
 .results .firstEvent div {
     display: flex;

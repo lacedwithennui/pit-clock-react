@@ -12,8 +12,7 @@ export default function PitClock() {
     const params = useParams();
 
     useEffect(() => {
-        if(cookies["team-number"].toString() !== params.teamNumber!.toString()) {
-            console.log("SETTING TEAM NUMBER TO", params.teamNumber)
+        if(cookies["team-number"] && +cookies["team-number"] !== +params.teamNumber!) {
             setCookies("team-number", params.teamNumber!, {path: "/"});
         }
     }, [cookies["team-number"], params.teamNumber])

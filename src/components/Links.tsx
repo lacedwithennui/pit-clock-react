@@ -15,11 +15,11 @@ export default function Links() {
                     <a href={`/season/${params.season!}/event/${params.eventCode!}/rankings`}>
                         <img src="/graph-icon.svg" alt="graph-icon" title="See event rankings" />
                     </a>
-                ) : (
+                ) : cookies["team-number"] ? (
                     <a href={`/season/${params.season!}/event/${params.eventCode!}/team/${cookies["team-number"]}`}>
                         <img src="/clock-icon.svg" alt="clock-icon" title="See pit clock" />
                     </a>
-                )}
+                ) : ""}
             </div>
             <div className="info">
                 <a href="https://clock.hpbelmont.com" target="_blank" rel="noreferrer">clock.hpbelmont.com</a>

@@ -20,7 +20,7 @@ export default function AllRankings({rankings, detailView = false, highlightTeam
                               key={ranking.teamNumber}
                               className={
                                   highlightTeamNumber === ranking.teamNumber
-                                      ? index <= 16 // 8 alliance seeds + 8 first picks = highlight in blue if the rank is in the top 16
+                                      ? (index + 1) <= 16 // 8 alliance seeds + 8 first picks = highlight in blue if the rank is in the top 16
                                           ? "blueMatch"
                                           : "redMatch"
                                       : ""

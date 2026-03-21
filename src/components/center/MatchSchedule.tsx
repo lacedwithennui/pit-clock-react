@@ -1,11 +1,12 @@
 import { useParams } from "react-router-dom";
-import { useMatchResults } from "../../utility/api.ts";
-import { type FIRSTMatchObject, type QueueMatchObject, type RankMap } from "../../utility/dataTypes.ts";
-import { getMatchWinner, getTeamAllianceColor } from "../../utility/util.ts";
+import { useMatchResults, useMatchScores } from "../../utility/api.ts";
+import { type FIRSTMatchObject, type FIRSTScoreMatchObject, type QueueMatchObject, type RankMap } from "../../utility/dataTypes.ts";
+import { getMatchWinner, getMatchWinnerFromScore, getTeamAllianceColor } from "../../utility/util.ts";
 
 export default function MatchSchedule({matches, rankMap}: {matches: QueueMatchObject[], rankMap: RankMap}) {
     const params = useParams();
-    const matchResultsQuery = useMatchResults(params.season!, params.eventCode!, +params.teamNumber!);
+    // const matchResultsQuery = useMatchResults(params.season!, params.eventCode!, +params.teamNumber!);
+    const matchScoresQuery = useMatchScores(params.season!, params.eventCode!, +params.teamNumber!);
 
     return (
         <div className="matchSchedule">
@@ -23,7 +24,7 @@ export default function MatchSchedule({matches, rankMap}: {matches: QueueMatchOb
                     </tr>
                 </thead>
                 <tbody>
-                    {matchResultsQuery.isLoading || !matchResultsQuery.data
+                    {/* {matchResultsQuery.isLoading || !matchResultsQuery.data
                         ? matches.map((match) => {console.log(matchResultsQuery.isLoading); return (
                             
                             <MatchRow key={match.label} match={match} teamNumber={+params.teamNumber!} rankMap={rankMap} />
@@ -42,7 +43,22 @@ export default function MatchSchedule({matches, rankMap}: {matches: QueueMatchOb
                                 )}
                             />
                         ))
-                    }
+                    } */}
+                    {matchScoresQuery.isLoading || !matchScoresQuery.data
+                        ? matches.map((match) => (
+                              <MatchRow key={match.label} match={match} teamNumber={+params.teamNumber!} rankMap={rankMap} />
+                          ))
+                        : matches.map((match) => (
+                              <MatchRow
+                                  key={match.label}
+                                  match={match}
+                                  teamNumber={+params.teamNumber!}
+                                  rankMap={rankMap}
+                                  scoresMatch={matchScoresQuery.data.MatchScores.find(
+                                      (queryMatch) => `${queryMatch.matchLevel} ${queryMatch.matchNumber}` === match.label
+                                  )}
+                              />
+                          ))}
                 </tbody>
             </table>
             {/* <button onClick={() => queryClient.invalidateQueries({queryKey: ["getEventNexus"]})}>Refresh</button> */}
@@ -50,7 +66,7 @@ export default function MatchSchedule({matches, rankMap}: {matches: QueueMatchOb
     );
 }
 
-function MatchRow({match, teamNumber, rankMap, resultsMatch}: {match: QueueMatchObject, teamNumber: number, rankMap: RankMap, resultsMatch?: FIRSTMatchObject}) {
+function MatchRow({match, teamNumber, rankMap, resultsMatch, scoresMatch}: {match: QueueMatchObject, teamNumber: number, rankMap: RankMap, resultsMatch?: FIRSTMatchObject, scoresMatch?: FIRSTScoreMatchObject}) {
     let resultString = "";
     if(resultsMatch) {
         const matchWinner = getMatchWinner(resultsMatch);
@@ -58,7 +74,16 @@ function MatchRow({match, teamNumber, rankMap, resultsMatch}: {match: QueueMatch
             resultString = matchWinner;
         }
         else {
-            resultString = getTeamAllianceColor(teamNumber!, match) === getMatchWinner(resultsMatch) ? "Win" : "Loss";
+            resultString = getTeamAllianceColor(teamNumber!, match) === matchWinner ? "Win" : "Loss";
+        }
+    }
+    else if(scoresMatch) {
+        const matchWinner = getMatchWinnerFromScore(scoresMatch);
+        if(matchWinner === "Tie") {
+            resultString = matchWinner;
+        }
+        else {
+            resultString = getTeamAllianceColor(teamNumber!, match) === matchWinner ? "Win" : "Loss";
         }
     }
     return (

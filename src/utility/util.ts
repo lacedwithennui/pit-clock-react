@@ -1,4 +1,4 @@
-import type { QueueEventObject, QueueMatchObject, RankingObject, RankingsObject, RankMap, FIRSTEventsObject, FIRSTMatchObject } from "./dataTypes.ts";
+import type { QueueEventObject, QueueMatchObject, RankingObject, RankingsObject, RankMap, FIRSTEventsObject, FIRSTMatchObject, FIRSTScoreMatchObject } from "./dataTypes.ts";
 
 export function formatCountdown(currentTime: Date, nextQueueTime: Date, nextOnDeckTime: Date, nextOnFieldTime: Date): {countdownLabel: string, countdownValue: string} {
     const queueDifference = nextQueueTime.getTime() - currentTime.getTime();
@@ -108,4 +108,8 @@ export function getRecordString(ranking: RankingObject): string {
 
 export function getMatchWinner(match: FIRSTMatchObject): "Blue" | "Red" | "Tie" {
     return match.scoreBlueFinal === match.scoreRedFinal ? "Tie" : (match.scoreBlueFinal > match.scoreRedFinal ? "Blue" : "Red");
+}
+
+export function getMatchWinnerFromScore(match: FIRSTScoreMatchObject): "Blue" | "Red" | "Tie" {
+    return match.winningAlliance === 1 ? "Red" : (match.winningAlliance === 2 ? "Blue" : "Tie");
 }

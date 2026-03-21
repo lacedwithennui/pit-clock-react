@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import type {FIRSTEventsObject, FIRSTMatchesObject, QueueEventObject, RankingsObject} from "./dataTypes.ts";
+import type { FIRSTEventsObject, FIRSTMatchesObject, FIRSTScoreMatchesObject, QueueEventObject, RankingsObject } from "./dataTypes.ts";
 
 const NEXUS_AUTH_TOKEN = import.meta.env.VITE_NEXUS_AUTH_TOKEN;
 const FIRST_USERNAME = import.meta.env.VITE_FIRST_USERNAME;
@@ -97,6 +97,30 @@ function getMatchResultsFIRST(season: string, eventCode: string, teamNumber: num
     );
 }
 
+function getMatchScoresFIRST(season: string, eventCode: string, teamNumber: number): Promise<FIRSTScoreMatchesObject> {
+    return fetch(`${FIRST_BASE_ADDRESS}/${season}/scores/${eventCode}/qualification?teamNumber=${teamNumber}`, {
+        headers: {
+            "Authorization": `Basic ${btoa(`${FIRST_USERNAME}:${FIRST_AUTH_TOKEN}`)}`
+        }
+    }).then(
+        (response) => {
+            if(response.ok) {
+                return response.json();
+            }
+            else if(response.status === 400) {
+                throw new Error(`Malformed request when requesting match scores from FIRST. Make sure the season "${season}" is correct.`);
+            }
+            else if(response.status === 404) {
+                throw new Error(`Event code "${eventCode}" not found when requesting match scores from FIRST.`);
+            }
+            else if(response.status === 401) {
+                throw new Error(`Authentication error returned when requesting match scores from FIRST.`);
+            }
+            throw new Error(`A server error occurred when requesting match scores from FIRST.`);
+        }
+    );
+}
+
 export function useEvents(season: string, teamNumber: number) {
     return useQuery({queryKey: ["getEventsFIRST", season, teamNumber], queryFn: () => getEventsFIRST(season, teamNumber), refetchOnWindowFocus: false, enabled: !!teamNumber});
 }
@@ -111,4 +135,8 @@ export function useRankings(season: string, eventCode: string) {
 
 export function useMatchResults(season: string, eventCode: string, teamNumber: number) {
     return useQuery({queryKey: ["getMatchResultsFIRST"], queryFn: () => getMatchResultsFIRST(season, eventCode, teamNumber), refetchOnWindowFocus: false, refetchInterval: 30000});
+}
+
+export function useMatchScores(season: string, eventCode: string, teamNumber: number) {
+    return useQuery({queryKey: ["getMatchScoresFIRST"], queryFn: () => getMatchScoresFIRST(season, eventCode, teamNumber), refetchOnWindowFocus: false, refetchInterval: 30000});
 }

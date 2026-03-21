@@ -98,3 +98,68 @@ export type FIRSTMatchObject = {
 export type FIRSTMatchesObject = {
     Matches: FIRSTMatchObject[]
 }
+
+/** Effective only in FRC Rebuilt. */
+export type FIRSTScoreMatchHubScore = {
+    autoCount: number;
+    transitionCount: number;
+    shift1Count: number;
+    shift2Count: number;
+    shift3Count: number;
+    shift4Count: number;
+    endgameCount: number;
+    teleopCount: number;
+    totalCount: number;
+    uncounted: number;
+    autoPoints: number;
+    transitionPoints: number;
+    shift1Points: number;
+    shift2Points: number;
+    shift3Points: number;
+    shift4Points: number;
+    endgamePoints: number;
+    teleopPoints: number;
+    totalPoints: number;
+};
+export type FIRSTScoreMatchAlliance = {
+    alliance: string;
+    autoTowerRobot1: string;
+    endGameTowerRobot1: string;
+    autoTowerRobot2: string;
+    endGameTowerRobot2: string;
+    autoTowerRobot3: string;
+    endGameTowerRobot3: string;
+    autoTowerPoints: number;
+    totalAutoPoints: number;
+    hubScore: FIRSTScoreMatchHubScore;
+    totalTeleopPoints: number;
+    endGameTowerPoints: number;
+    totalTowerPoints: number;
+    energizedAchieved: true;
+    superchargedAchieved: false;
+    traversalAchieved: false;
+    minorFoulCount: number;
+    majorFoulCount: number;
+    g206Penalty: false;
+    adjustPoints: number;
+    foulPoints: number;
+    rp: number;
+    totalPoints: number;
+    penalties: string;
+};
+export type FIRSTScoreMatchObject = {
+    matchLevel: string;
+    matchNumber: number;
+    winningAlliance: number;
+    tiebreaker: {
+        tiebreakerType: string;
+        tiebreakerReason: string;
+    };
+    energizedThreshold: number;
+    superchargedThreshold: number;
+    traversalThreshold: number;
+    alliances: FIRSTScoreMatchAlliance[];
+};
+export type FIRSTScoreMatchesObject = {
+    MatchScores: FIRSTScoreMatchObject[];
+}

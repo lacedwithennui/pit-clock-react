@@ -91,27 +91,27 @@ function MatchRow({match, teamNumber, rankMap, resultsMatch, scoresMatch}: {matc
             <td>{match.label}</td>
             <td className={+match.blueTeams[0] === teamNumber ? "blueMatch" : ""}>
                 <span className="teamNumber">{match.blueTeams[0]}</span>
-                <span className="teamRank">{"Rank: " + (rankMap.get(+match.blueTeams[0]) || "?")}</span>
+                <span className="teamRank">{rankMap.get(+match.blueTeams[0]) ? "Rank: " + rankMap.get(+match.blueTeams[0]) : ""}</span>
             </td>
             <td className={+match.blueTeams[1] === teamNumber ? "blueMatch" : ""}>
                 <span className="teamNumber">{match.blueTeams[1]}</span>
-                <span className="teamRank">{"Rank: " + (rankMap.get(+match.blueTeams[1]) || "?")}</span>
+                <span className="teamRank">{rankMap.get(+match.blueTeams[1]) ? "Rank: " + rankMap.get(+match.blueTeams[1]) : ""}</span>
             </td>
             <td className={+match.blueTeams[2] === teamNumber ? "blueMatch" : ""}>
                 <span className="teamNumber">{match.blueTeams[2]}</span>
-                <span className="teamRank">{"Rank: " + (rankMap.get(+match.blueTeams[2]) || "?")}</span>
+                <span className="teamRank">{rankMap.get(+match.blueTeams[2]) ? "Rank: " + rankMap.get(+match.blueTeams[2]) : ""}</span>
             </td>
             <td className={+match.redTeams[0] === teamNumber ? "redMatch" : ""}>
                 <span className="teamNumber">{match.redTeams[0]}</span>
-                <span className="teamRank">{"Rank: " + (rankMap.get(+match.redTeams[0]) || "?")}</span>
+                <span className="teamRank">{rankMap.get(+match.redTeams[0]) ? "Rank: " + rankMap.get(+match.redTeams[0]) : ""}</span>
             </td>
             <td className={+match.redTeams[1] === teamNumber ? "redMatch" : ""}>
                 <span className="teamNumber">{match.redTeams[1]}</span>
-                <span className="teamRank">{"Rank: " + (rankMap.get(+match.redTeams[1]) || "?")}</span>
+                <span className="teamRank">{rankMap.get(+match.redTeams[1]) ? "Rank: " + rankMap.get(+match.redTeams[1]) : ""}</span>
             </td>
             <td className={+match.redTeams[2] === teamNumber ? "redMatch" : ""}>
                 <span className="teamNumber">{match.redTeams[2]}</span>
-                <span className="teamRank">{"Rank: " + (rankMap.get(+match.redTeams[2]) || "?")}</span>
+                <span className="teamRank">{rankMap.get(+match.redTeams[2]) ? "Rank: " + rankMap.get(+match.redTeams[2]) : ""}</span>
             </td>
             <td>
                 {resultString || new Date(match.times.estimatedStartTime).toLocaleString("en-US", {

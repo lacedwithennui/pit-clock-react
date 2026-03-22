@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useEvent, useRankings } from "../../utility/api.ts";
 import { filterTeamMatches, getNextTeamMatch, getRankingsMap } from "../../utility/util.ts";
-import { useError } from "../ErrorContext.tsx";
+import { useError } from "../ErrorProvider.tsx";
 import TimeClock from "../TimeClock.tsx";
 import Countdown from "./Countdown.tsx";
 import MatchSchedule from "./MatchSchedule.tsx";
@@ -19,11 +19,11 @@ export default function Center() {
         if(eventQuery.error) {
             errorContext.showError(eventQuery.error.message);
         }
-    }, [eventQuery.error, errorContext])
+    }, [eventQuery.error, errorContext]);
 
     function conditionalRender() {
         if(eventQuery.isLoading || !eventQuery.data) {
-            return <p>Loading...</p>
+            return <p>Loading...</p>;
         }
         else if(eventQuery.error) {
             return (
@@ -31,7 +31,7 @@ export default function Center() {
                     <p className="message">Error getting match schedule.</p>
                     <TimeClock />
                 </>
-            )
+            );
         }
         else {
             const teamMatches = filterTeamMatches(teamNumber, eventQuery.data!);
@@ -41,7 +41,7 @@ export default function Center() {
                         <p className="message">No schedule has been posted yet.</p>
                         <TimeClock />
                     </>
-                )
+                );
             }
             else if(eventQuery.data!.matches.length !== 0 && teamMatches.length === 0) {
                 return (
@@ -49,7 +49,7 @@ export default function Center() {
                         <p className="message">A match schedule was found, but team {teamNumber} was not scheduled for any matches. Is your team number correct?</p>
                         <TimeClock />
                     </>
-                )
+                );
             }
             const nextMatch = getNextTeamMatch(teamMatches);
             return (
@@ -57,7 +57,7 @@ export default function Center() {
                     <Countdown nextQueueTime={new Date(nextMatch.times.estimatedQueueTime)} nextOnDeckTime={new Date(nextMatch.times.estimatedOnDeckTime)} nextOnFieldTime={new Date(nextMatch.times.estimatedOnFieldTime)} />
                     <MatchSchedule matches={teamMatches} rankMap={getRankingsMap(rankingsQuery.data || {Rankings: []})} />
                 </>
-            )
+            );
         }
     }
 

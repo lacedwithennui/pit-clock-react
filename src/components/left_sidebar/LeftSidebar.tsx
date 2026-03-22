@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useRankings } from "../../utility/api.ts";
 import { getTeamRankingObject } from "../../utility/util.ts";
 import AllRankings from "../AllRankings.tsx";
-import { useError } from "../ErrorContext.tsx";
+import { useError } from "../ErrorProvider.tsx";
 import TeamRanking from "./TeamRanking.tsx";
 import "./LeftSidebar.css";
 
@@ -18,17 +18,17 @@ export default function LeftSidebar() {
         if(rankingsQuery.error || error) {
             errorContext.showError(rankingsQuery.error? rankingsQuery.error.message : error);
         }
-    }, [rankingsQuery.error, error, errorContext])
+    }, [rankingsQuery.error, error, errorContext]);
     
     function conditionalRender() {
         if(rankingsQuery.isLoading) {
-            return <p className="message">Loading...</p>
+            return <p className="message">Loading...</p>;
         }
         else if(rankingsQuery.error) {
-            return <p className="message">Error getting rankings.</p>
+            return <p className="message">Error getting rankings.</p>;
         }
         else if(rankingsQuery.data?.Rankings.length === 0) {
-            return <p className="message">No ranking data has been posted yet.</p>
+            return <p className="message">No ranking data has been posted yet.</p>;
         }
         else {
             try {
@@ -39,13 +39,13 @@ export default function LeftSidebar() {
                         <TeamRanking teamRanking={teamRankingObject}></TeamRanking>
                         <AllRankings rankings={rankingsQuery.data!} highlightTeamNumber={teamNumber}/>
                     </>
-                )
+                );
             }
             catch(error) {
                 if(!error) {
                     setError(`Could not find ranking info for team ${teamNumber}`);
                 }
-                return <p className="message">Error getting ranking info for team {teamNumber}</p>
+                return <p className="message">Error getting ranking info for team {teamNumber}</p>;
             }
         }
     }

@@ -1,7 +1,7 @@
-import type { RankingObject } from "../../utility/dataTypes.ts";
+import type { Rankings } from "../../utility/types/first.ts";
 import { getRecordString } from "../../utility/util.ts";
 
-export default function TeamRanking({teamRanking}: {teamRanking: RankingObject}) {
+export default function TeamRanking({teamRanking}: {teamRanking: Rankings.Ranking}) {
     return (
         <div className="teamRanking">
             <p>Team {teamRanking.teamNumber} rank: {teamRanking.rank}</p>

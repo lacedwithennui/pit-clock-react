@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import { useError } from "../components/ErrorContext.tsx";
+import { useError } from "../components/ErrorProvider.tsx";
 import { useEvents } from "../utility/api.ts";
 import { sortEvents } from "../utility/util.ts";
 import "./Landing.css";
@@ -19,10 +19,9 @@ export default function Landing() {
 
     useEffect(() => {
         if (luckyMode && eventsQuery.data && eventsQuery.data.Events.length > 0) {
-            const events = eventsQuery.data.Events;
             const today = new Date();
 
-            const targetEvent = events.find(event => {
+            const targetEvent = eventsQuery.data.Events.find(event => {
                 const start = new Date(event.dateStart);
                 const end = new Date(event.dateEnd);
                 return today >= start && today <= end;
@@ -39,13 +38,13 @@ export default function Landing() {
         if(cookies["team-number"] && +inputValue !== +cookies["team-number"]) {
             setInputValue(cookies["team-number"]);
         }
-    }, [cookies])
+    }, [cookies]);
 
     useEffect(() => {
         if(eventsQuery.error) {
             errorContext.showError(eventsQuery.error.message);
         }
-    }, [eventsQuery.error, errorContext])
+    }, [eventsQuery.error, errorContext]);
 
     function handleSearch() {
         setLuckyMode(false);
@@ -61,16 +60,16 @@ export default function Landing() {
 
     function conditionalRender() {
         if(eventsQuery.isLoading) {
-            return <p className="message">Loading...</p>
+            return <p className="message">Loading...</p>;
         }
         else if(eventsQuery.error) {
-            return <p className="message">Error getting events.</p>
+            return <p className="message">Error getting events.</p>;
         }
         else if(!eventsQuery.isFetched || !eventsQuery.data) {
-            return <p className="message">Enter a team number to see results.</p>
+            return <p className="message">Enter a team number to see results.</p>;
         }
         else if(eventsQuery.data!.Events.length === 0) {
-            return <p className="message">No events were found for team {submittedTeam}.</p>
+            return <p className="message">No events were found for team {submittedTeam}.</p>;
         }
         else {
             return (
@@ -88,10 +87,10 @@ export default function Landing() {
                                     <a href={`/season/${currentYear}/event/${firstEvent.code}/rankings`}>Rankings</a>
                                 </div>
                             </div>
-                        )
+                        );
                     })}
                 </>
-            )
+            );
         }
     }
 

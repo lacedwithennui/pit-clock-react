@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useEvent } from "../../utility/api.ts";
 import { filterTeamMatches, getCurrentEventMatch, getNextTeamMatch, getTeamAllianceClassName, getTeamAllianceStation } from "../../utility/util.ts";
-import { useError } from "../ErrorContext.tsx";
+import { useError } from "../ErrorProvider.tsx";
 import TimeClock from "../TimeClock.tsx";
 import "./RightSidebar.css";
 
@@ -20,15 +20,13 @@ export default function RightSidebar() {
 
     function conditionalRender() {
         if(eventQuery.isLoading) {
-            return <p className="message">Loading...</p>
+            return <p className="message">Loading...</p>;
         }
         else if(eventQuery.error) {
-            return <p className="message">Error getting queueing information.</p>
+            return <p className="message">Error getting queueing information.</p>;
         }
         else if(eventQuery.data!.matches.length === 0) {
-            return (
-                <p className="message">No queueing information has been posted yet.</p>
-            )
+            return <p className="message">No queueing information has been posted yet.</p>;
         }
         else {
             const teamMatches = filterTeamMatches(teamNumber, eventQuery.data!);
@@ -36,7 +34,7 @@ export default function RightSidebar() {
             if(teamMatches.length === 0) {
                 return (
                     <p className="message">A match schedule was found, but team {teamNumber} was not in the queueing information. Is your team number correct?</p>
-                )
+                );
             }
 
             const nextMatch = getNextTeamMatch(teamMatches);
@@ -49,7 +47,7 @@ export default function RightSidebar() {
                     <h1 className={`bumperPreview ${getTeamAllianceClassName(teamNumber, nextMatch)}`}>{teamNumber}</h1>
                     <TimeClock />
                 </>
-            )
+            );
         }
     }
 

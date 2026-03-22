@@ -11,11 +11,11 @@ export default function ErrorProvider({children}: {children: ReactNode}) {
 
     function showError(message: string) {
         setErrorMessage(message);
-    };
+    }
 
     function closeModal() {
         setErrorMessage(null);
-    };
+    }
 
     return (
         <ErrorContext.Provider value={{showError}}>
@@ -30,7 +30,7 @@ export default function ErrorProvider({children}: {children: ReactNode}) {
             )}
         </ErrorContext.Provider>
     );
-};
+}
 
 export function useError() {
     const context = useContext(ErrorContext);

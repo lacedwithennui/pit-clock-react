@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Route, Routes } from "react-router-dom";
 import PitClock from "./pages/PitClock.tsx";
 import Rankings from "./pages/Rankings.tsx";
-import ErrorProvider from "./components/ErrorContext.tsx";
+import ErrorProvider from "./components/ErrorProvider.tsx";
 import Landing from "./pages/Landing.tsx";
 import "./App.css";
 import "./components/Shared.css";

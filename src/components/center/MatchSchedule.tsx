@@ -1,19 +1,20 @@
 import { useParams } from "react-router-dom";
 import { useMatchResults, useMatchScores } from "../../utility/api.ts";
-import { type BlueFilledQueueMatch, type FilledQueueMatch, type FIRSTMatchObject, type FIRSTScoreMatchObject, type PartiallyFilledQueueMatch, type RankMap, type RedFilledQueueMatch, type SemiFilledQueueMatch } from "../../utility/dataTypes.ts";
 import { getMatchWinner, getMatchWinnerFromScore, getTeamAllianceColor, isBlueFilled, isFilled, isRedFilled, isSemiFilled } from "../../utility/util.ts";
+import type { MatchResults, MatchScores, Rankings } from "../../utility/types/first.ts";
+import type { BlueOnlyMatch, FullMatch, OneAllianceMatch, OneOrMoreAlliancesMatch, RedOnlyMatch } from "../../utility/types/nexus.ts";
 
-export default function MatchSchedule({matches, rankMap}: {matches: PartiallyFilledQueueMatch[], rankMap: RankMap}) {
+export default function MatchSchedule({matches, rankMap}: {matches: OneOrMoreAlliancesMatch[], rankMap: Rankings.RankMap}) {
     const params = useParams();
     const matchResultsQuery = useMatchResults(params.season!, params.eventCode!, +params.teamNumber!);
     const matchScoresQuery = useMatchScores(params.season!, params.eventCode!, +params.teamNumber!);
 
-    function mapOneMatch(match: PartiallyFilledQueueMatch, resultsMatch?: FIRSTMatchObject, scoresMatch?: FIRSTScoreMatchObject) {
+    function mapOneMatch(match: OneOrMoreAlliancesMatch, resultsMatch?: MatchResults.Match, scoresMatch?: MatchScores.Match) {
         if(isFilled(match)) {
             return (
                 <MatchRow
                     key={match.label}
-                    match={match as FilledQueueMatch}
+                    match={match as FullMatch}
                     teamNumber={+params.teamNumber!}
                     rankMap={rankMap}
                     resultsMatch={resultsMatch}
@@ -25,7 +26,7 @@ export default function MatchSchedule({matches, rankMap}: {matches: PartiallyFil
             return (
                 <PartialMatchRow
                     key={match.label}
-                    match={match as FilledQueueMatch}
+                    match={match as FullMatch}
                     teamNumber={+params.teamNumber!}
                     rankMap={rankMap}
                 />
@@ -82,9 +83,9 @@ export default function MatchSchedule({matches, rankMap}: {matches: PartiallyFil
     );
 }
 
-function PartialMatchRow({match, teamNumber, rankMap}: {match: SemiFilledQueueMatch, teamNumber: number, rankMap: RankMap}) {
+function PartialMatchRow({match, teamNumber, rankMap}: {match: OneAllianceMatch, teamNumber: number, rankMap: Rankings.RankMap}) {
     if(isBlueFilled(match)) {
-        match = match as BlueFilledQueueMatch;
+        match = match as BlueOnlyMatch;
         return (
             <tr>
                 <td>{match.label}</td>
@@ -111,10 +112,10 @@ function PartialMatchRow({match, teamNumber, rankMap}: {match: SemiFilledQueueMa
                     })}
                 </td>
             </tr>
-        )
+        );
     }
     else if(isRedFilled(match)) {
-        match = match as RedFilledQueueMatch;
+        match = match as RedOnlyMatch;
         return (
             <tr>
                 <td>{match.label}</td>
@@ -141,15 +142,15 @@ function PartialMatchRow({match, teamNumber, rankMap}: {match: SemiFilledQueueMa
                     })}
                 </td>
             </tr>
-        )
+        );
     }
 }
 
-function MatchRow({match, teamNumber, rankMap, resultsMatch, scoresMatch}: {match: FilledQueueMatch, teamNumber: number, rankMap: RankMap, resultsMatch?: FIRSTMatchObject, scoresMatch?: FIRSTScoreMatchObject}) {
+function MatchRow({match, teamNumber, rankMap, resultsMatch, scoresMatch}: {match: FullMatch, teamNumber: number, rankMap: Rankings.RankMap, resultsMatch?: MatchResults.Match, scoresMatch?: MatchScores.Match}) {
     let resultString = "";
     if(resultsMatch) {
         const matchWinner = getMatchWinner(resultsMatch);
-        if(matchWinner && matchWinner === "Tie") {
+        if(matchWinner && matchWinner === "tie") {
             resultString = matchWinner;
         }
         else if(matchWinner) {
@@ -158,7 +159,7 @@ function MatchRow({match, teamNumber, rankMap, resultsMatch, scoresMatch}: {matc
     }
     else if(scoresMatch) {
         const matchWinner = getMatchWinnerFromScore(scoresMatch);
-        if(matchWinner === "Tie") {
+        if(matchWinner === "tie") {
             resultString = matchWinner;
         }
         else {

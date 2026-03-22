@@ -1,7 +1,7 @@
-import type { RankingsObject } from "../utility/dataTypes.ts";
+import type { Rankings } from "../utility/types/first.ts";
 import { getRecordString } from "../utility/util.ts";
 
-export default function AllRankings({rankings, detailView = false, highlightTeamNumber}: {rankings: RankingsObject, detailView?: boolean, highlightTeamNumber?: number}) {
+export default function AllRankings({rankings, detailView = false, highlightTeamNumber}: {rankings: Rankings.RankingsWrapper, detailView?: boolean, highlightTeamNumber?: number}) {
     return (
         <div className={detailView ? "allRankings detailView" : "allRankings"}>
             {detailView

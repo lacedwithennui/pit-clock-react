@@ -15,7 +15,7 @@ export default function PitClock() {
         if(cookies["team-number"] && +cookies["team-number"] !== +params.teamNumber!) {
             setCookies("team-number", params.teamNumber!, {path: "/"});
         }
-    }, [cookies["team-number"], params.teamNumber])
+    }, [cookies["team-number"], params.teamNumber]);
 
     return (
         <div className="pitClock">

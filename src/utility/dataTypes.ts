@@ -28,13 +28,19 @@ export type TimesObject = {
     actualOnDeckTime: number;
     actualOnFieldTime: number;
 };
-export type QueueMatchObject = {
+export type UnFilledQueueMatch = {
+    label: string;
+    status: string;
+    times: TimesObject;
+}
+export type FilledQueueMatch = {
     label: string;
     status: string;
     redTeams: string[];
     blueTeams: string[];
     times: TimesObject;
-};
+}
+export type QueueMatchObject = UnFilledQueueMatch | FilledQueueMatch;
 export type AnnouncementObject = {
     id: string;
     postedTime: number;

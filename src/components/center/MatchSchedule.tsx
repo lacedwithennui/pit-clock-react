@@ -1,12 +1,49 @@
 import { useParams } from "react-router-dom";
 import { useMatchResults, useMatchScores } from "../../utility/api.ts";
-import { type FIRSTMatchObject, type FIRSTScoreMatchObject, type QueueMatchObject, type RankMap } from "../../utility/dataTypes.ts";
+import { type FilledQueueMatch, type FIRSTMatchObject, type FIRSTScoreMatchObject, type QueueMatchObject, type RankMap } from "../../utility/dataTypes.ts";
 import { getMatchWinner, getMatchWinnerFromScore, getTeamAllianceColor } from "../../utility/util.ts";
 
-export default function MatchSchedule({matches, rankMap}: {matches: QueueMatchObject[], rankMap: RankMap}) {
+export default function MatchSchedule({matches, rankMap}: {matches: FilledQueueMatch[], rankMap: RankMap}) {
     const params = useParams();
-    // const matchResultsQuery = useMatchResults(params.season!, params.eventCode!, +params.teamNumber!);
+    const matchResultsQuery = useMatchResults(params.season!, params.eventCode!, +params.teamNumber!);
     const matchScoresQuery = useMatchScores(params.season!, params.eventCode!, +params.teamNumber!);
+
+    function conditionalRender() {
+        if(matchResultsQuery.data && matchResultsQuery.data.Matches.length) {
+            console.log("Rendering wins and losses from results query");
+            return matches.map((match) => (
+                <MatchRow
+                    key={match.label}
+                    match={match}
+                    teamNumber={+params.teamNumber!}
+                    rankMap={rankMap}
+                    resultsMatch={matchResultsQuery.data.Matches.find(
+                        (queryMatch) =>
+                            queryMatch.description === match.label ||
+                            `${queryMatch.tournamentLevel} ${queryMatch.matchNumber}` === match.label ||
+                            (queryMatch.description === "Final Tiebreaker" && match.label === "Final 3")
+                    )}
+                />
+            ));
+        }
+        else if(matchScoresQuery.data && matchScoresQuery.data.MatchScores.length) {
+            console.log("Rendering wins and losses from scores query");
+            return matches.map((match) => (
+                <MatchRow
+                    key={match.label}
+                    match={match}
+                    teamNumber={+params.teamNumber!}
+                    rankMap={rankMap}
+                    scoresMatch={matchScoresQuery.data.MatchScores.find(
+                        (queryMatch) => `${queryMatch.matchLevel} ${queryMatch.matchNumber}` === match.label
+                    )}
+                />
+            ));
+        }
+        else {
+            return matches.map((match) => <MatchRow key={match.label} match={match} teamNumber={+params.teamNumber!} rankMap={rankMap} />);
+        }
+    }
 
     return (
         <div className="matchSchedule">
@@ -24,49 +61,14 @@ export default function MatchSchedule({matches, rankMap}: {matches: QueueMatchOb
                     </tr>
                 </thead>
                 <tbody>
-                    {/* {matchResultsQuery.isLoading || !matchResultsQuery.data
-                        ? matches.map((match) => {console.log(matchResultsQuery.isLoading); return (
-                            
-                            <MatchRow key={match.label} match={match} teamNumber={+params.teamNumber!} rankMap={rankMap} />
-                        )})
-                        : matches.map((match) => (
-                            <MatchRow
-                                key={match.label}
-                                match={match}
-                                teamNumber={+params.teamNumber!}
-                                rankMap={rankMap}
-                                resultsMatch={matchResultsQuery.data.Matches.find(
-                                    (queryMatch) =>
-                                        queryMatch.description === match.label ||
-                                        `${queryMatch.tournamentLevel} ${queryMatch.matchNumber}` === match.label ||
-                                        (queryMatch.description === "Final Tiebreaker" && match.label === "Final 3")
-                                )}
-                            />
-                        ))
-                    } */}
-                    {matchScoresQuery.isLoading || !matchScoresQuery.data
-                        ? matches.map((match) => (
-                              <MatchRow key={match.label} match={match} teamNumber={+params.teamNumber!} rankMap={rankMap} />
-                          ))
-                        : matches.map((match) => (
-                              <MatchRow
-                                  key={match.label}
-                                  match={match}
-                                  teamNumber={+params.teamNumber!}
-                                  rankMap={rankMap}
-                                  scoresMatch={matchScoresQuery.data.MatchScores.find(
-                                      (queryMatch) => `${queryMatch.matchLevel} ${queryMatch.matchNumber}` === match.label
-                                  )}
-                              />
-                          ))}
+                    {conditionalRender()}
                 </tbody>
             </table>
-            {/* <button onClick={() => queryClient.invalidateQueries({queryKey: ["getEventNexus"]})}>Refresh</button> */}
         </div>
     );
 }
 
-function MatchRow({match, teamNumber, rankMap, resultsMatch, scoresMatch}: {match: QueueMatchObject, teamNumber: number, rankMap: RankMap, resultsMatch?: FIRSTMatchObject, scoresMatch?: FIRSTScoreMatchObject}) {
+function MatchRow({match, teamNumber, rankMap, resultsMatch, scoresMatch}: {match: FilledQueueMatch, teamNumber: number, rankMap: RankMap, resultsMatch?: FIRSTMatchObject, scoresMatch?: FIRSTScoreMatchObject}) {
     let resultString = "";
     if(resultsMatch) {
         const matchWinner = getMatchWinner(resultsMatch);

@@ -1,4 +1,4 @@
-import type { QueueEventObject, QueueMatchObject, RankingObject, RankingsObject, RankMap, FIRSTEventsObject, FIRSTMatchObject, FIRSTScoreMatchObject } from "./dataTypes.ts";
+import type { FilledQueueMatch, FIRSTEventsObject, FIRSTMatchObject, FIRSTScoreMatchObject, QueueEventObject, QueueMatchObject, RankingObject, RankingsObject, RankMap } from "./dataTypes.ts";
 
 export function formatCountdown(currentTime: Date, nextQueueTime: Date, nextOnDeckTime: Date, nextOnFieldTime: Date): {countdownLabel: string, countdownValue: string} {
     const queueDifference = nextQueueTime.getTime() - currentTime.getTime();
@@ -51,23 +51,23 @@ export function sortEvents(events: FIRSTEventsObject): FIRSTEventsObject {
     })}
 }
 
-export function filterTeamMatches(teamNumber: number, event: QueueEventObject): QueueMatchObject[] {
-    return event.matches.filter((match) => match.redTeams.includes(teamNumber.toString()) || match.blueTeams.includes(teamNumber.toString()));
+export function filterTeamMatches(teamNumber: number, event: QueueEventObject): FilledQueueMatch[] {
+    return event.matches.filter((match) => match.hasOwnProperty("redTeams") ? (match as FilledQueueMatch).redTeams.includes(teamNumber.toString()) || (match as FilledQueueMatch).blueTeams.includes(teamNumber.toString()) : false) as FilledQueueMatch[];
 }
 
 export function getNextTeamMatch(matches: QueueMatchObject[]): QueueMatchObject {
     return matches.find((match) => match.status !== "On field") || matches.at(-1)!;
 }
 
-export function getTeamAllianceClassName(teamNumber: number, match: QueueMatchObject): "blueMatch" | "redMatch" | "" {
+export function getTeamAllianceClassName(teamNumber: number, match: FilledQueueMatch): "blueMatch" | "redMatch" | "" {
     return match.blueTeams.includes(teamNumber.toString()) ? "blueMatch" : (match.redTeams.includes(teamNumber.toString()) ? "redMatch" : "");
 }
 
-export function getTeamAllianceColor(teamNumber: number, match: QueueMatchObject): "Blue" | "Red" | "" {
+export function getTeamAllianceColor(teamNumber: number, match: FilledQueueMatch): "Blue" | "Red" | "" {
     return match.blueTeams.includes(teamNumber.toString()) ? "Blue" : (match.redTeams.includes(teamNumber.toString()) ? "Red" : "");
 }
 
-export function getTeamAllianceStation(teamNumber: number, match: QueueMatchObject): string {
+export function getTeamAllianceStation(teamNumber: number, match: FilledQueueMatch): string {
     for(let i = 0; i < match.blueTeams.length; i++) {
         if(match.blueTeams[i] === teamNumber.toString()) {
             return `Blue ${i + 1}`;

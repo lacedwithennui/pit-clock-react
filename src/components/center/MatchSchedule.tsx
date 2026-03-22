@@ -1,47 +1,61 @@
 import { useParams } from "react-router-dom";
 import { useMatchResults, useMatchScores } from "../../utility/api.ts";
-import { type FilledQueueMatch, type FIRSTMatchObject, type FIRSTScoreMatchObject, type RankMap } from "../../utility/dataTypes.ts";
-import { getMatchWinner, getMatchWinnerFromScore, getTeamAllianceColor } from "../../utility/util.ts";
+import { type BlueFilledQueueMatch, type FilledQueueMatch, type FIRSTMatchObject, type FIRSTScoreMatchObject, type PartiallyFilledQueueMatch, type RankMap, type RedFilledQueueMatch, type SemiFilledQueueMatch } from "../../utility/dataTypes.ts";
+import { getMatchWinner, getMatchWinnerFromScore, getTeamAllianceColor, isBlueFilled, isFilled, isRedFilled, isSemiFilled } from "../../utility/util.ts";
 
-export default function MatchSchedule({matches, rankMap}: {matches: FilledQueueMatch[], rankMap: RankMap}) {
+export default function MatchSchedule({matches, rankMap}: {matches: PartiallyFilledQueueMatch[], rankMap: RankMap}) {
     const params = useParams();
     const matchResultsQuery = useMatchResults(params.season!, params.eventCode!, +params.teamNumber!);
     const matchScoresQuery = useMatchScores(params.season!, params.eventCode!, +params.teamNumber!);
 
+    function mapOneMatch(match: PartiallyFilledQueueMatch, resultsMatch?: FIRSTMatchObject, scoresMatch?: FIRSTScoreMatchObject) {
+        if(isFilled(match)) {
+            return (
+                <MatchRow
+                    key={match.label}
+                    match={match as FilledQueueMatch}
+                    teamNumber={+params.teamNumber!}
+                    rankMap={rankMap}
+                    resultsMatch={resultsMatch}
+                    scoresMatch={scoresMatch}
+                />
+            );
+        }
+        else if(isSemiFilled(match)) {
+            return (
+                <PartialMatchRow
+                    key={match.label}
+                    match={match as FilledQueueMatch}
+                    teamNumber={+params.teamNumber!}
+                    rankMap={rankMap}
+                />
+            );
+        }
+        return;
+    }
+
     function conditionalRender() {
         if(matchResultsQuery.data && matchResultsQuery.data.Matches.length) {
-            console.log("Rendering wins and losses from results query");
-            return matches.map((match) => (
-                <MatchRow
-                    key={match.label}
-                    match={match}
-                    teamNumber={+params.teamNumber!}
-                    rankMap={rankMap}
-                    resultsMatch={matchResultsQuery.data.Matches.find(
-                        (queryMatch) =>
-                            queryMatch.description === match.label ||
-                            `${queryMatch.tournamentLevel} ${queryMatch.matchNumber}` === match.label ||
-                            (queryMatch.description === "Final Tiebreaker" && match.label === "Final 3")
-                    )}
-                />
-            ));
+            return matches.map((match) => {
+                const resultsMatch = matchResultsQuery.data.Matches.find(
+                    (queryMatch) =>
+                        queryMatch.description === match.label ||
+                        `${queryMatch.tournamentLevel} ${queryMatch.matchNumber}` === match.label ||
+                        (queryMatch.description === "Final Tiebreaker" && match.label === "Final 3")
+                );
+                return mapOneMatch(match, resultsMatch);
+            });
         }
         else if(matchScoresQuery.data && matchScoresQuery.data.MatchScores.length) {
-            console.log("Rendering wins and losses from scores query");
-            return matches.map((match) => (
-                <MatchRow
-                    key={match.label}
-                    match={match}
-                    teamNumber={+params.teamNumber!}
-                    rankMap={rankMap}
-                    scoresMatch={matchScoresQuery.data.MatchScores.find(
-                        (queryMatch) => `${queryMatch.matchLevel} ${queryMatch.matchNumber}` === match.label
-                    )}
-                />
-            ));
+            return matches.map((match) => {
+                const scoresMatch = matchScoresQuery.data.MatchScores.find(
+                    (queryMatch) => `${queryMatch.matchLevel} ${queryMatch.matchNumber}` === match.label
+                );
+                return mapOneMatch(match, undefined, scoresMatch);
+            });
         }
         else {
-            return matches.map((match) => <MatchRow key={match.label} match={match} teamNumber={+params.teamNumber!} rankMap={rankMap} />);
+            return matches.map((match) => mapOneMatch(match));
         }
     }
 
@@ -68,10 +82,72 @@ export default function MatchSchedule({matches, rankMap}: {matches: FilledQueueM
     );
 }
 
+function PartialMatchRow({match, teamNumber, rankMap}: {match: SemiFilledQueueMatch, teamNumber: number, rankMap: RankMap}) {
+    if(isBlueFilled(match)) {
+        match = match as BlueFilledQueueMatch;
+        return (
+            <tr>
+                <td>{match.label}</td>
+                <td className={+match.blueTeams[0] === teamNumber ? "blueMatch" : ""}>
+                    <span className="teamNumber">{match.blueTeams[0]}</span>
+                    <span className="teamRank">{rankMap.get(+match.blueTeams[0]) ? "Rank: " + rankMap.get(+match.blueTeams[0]) : ""}</span>
+                </td>
+                <td className={+match.blueTeams[1] === teamNumber ? "blueMatch" : ""}>
+                    <span className="teamNumber">{match.blueTeams[1]}</span>
+                    <span className="teamRank">{rankMap.get(+match.blueTeams[1]) ? "Rank: " + rankMap.get(+match.blueTeams[1]) : ""}</span>
+                </td>
+                <td className={+match.blueTeams[2] === teamNumber ? "blueMatch" : ""}>
+                    <span className="teamNumber">{match.blueTeams[2]}</span>
+                    <span className="teamRank">{rankMap.get(+match.blueTeams[2]) ? "Rank: " + rankMap.get(+match.blueTeams[2]) : ""}</span>
+                </td>
+                <td colSpan={3}>
+                    No opponents yet...
+                </td>
+                <td>
+                    {new Date(match.times.estimatedStartTime).toLocaleString("en-US", {
+                        weekday: "short",
+                        hour: "numeric",
+                        minute: "2-digit"
+                    })}
+                </td>
+            </tr>
+        )
+    }
+    else if(isRedFilled(match)) {
+        match = match as RedFilledQueueMatch;
+        return (
+            <tr>
+                <td>{match.label}</td>
+                <td colSpan={3}>
+                    No opponents yet...
+                </td>
+                <td className={+match.redTeams[0] === teamNumber ? "redMatch" : ""}>
+                    <span className="teamNumber">{match.redTeams[0]}</span>
+                    <span className="teamRank">{rankMap.get(+match.redTeams[0]) ? "Rank: " + rankMap.get(+match.redTeams[0]) : ""}</span>
+                </td>
+                <td className={+match.redTeams[1] === teamNumber ? "redMatch" : ""}>
+                    <span className="teamNumber">{match.redTeams[1]}</span>
+                    <span className="teamRank">{rankMap.get(+match.redTeams[1]) ? "Rank: " + rankMap.get(+match.redTeams[1]) : ""}</span>
+                </td>
+                <td className={+match.redTeams[2] === teamNumber ? "redMatch" : ""}>
+                    <span className="teamNumber">{match.redTeams[2]}</span>
+                    <span className="teamRank">{rankMap.get(+match.redTeams[2]) ? "Rank: " + rankMap.get(+match.redTeams[2]) : ""}</span>
+                </td>
+                <td>
+                    {new Date(match.times.estimatedStartTime).toLocaleString("en-US", {
+                        weekday: "short",
+                        hour: "numeric",
+                        minute: "2-digit"
+                    })}
+                </td>
+            </tr>
+        )
+    }
+}
+
 function MatchRow({match, teamNumber, rankMap, resultsMatch, scoresMatch}: {match: FilledQueueMatch, teamNumber: number, rankMap: RankMap, resultsMatch?: FIRSTMatchObject, scoresMatch?: FIRSTScoreMatchObject}) {
     let resultString = "";
     if(resultsMatch) {
-        console.log(resultsMatch)
         const matchWinner = getMatchWinner(resultsMatch);
         if(matchWinner && matchWinner === "Tie") {
             resultString = matchWinner;
@@ -81,7 +157,6 @@ function MatchRow({match, teamNumber, rankMap, resultsMatch, scoresMatch}: {matc
         }
     }
     else if(scoresMatch) {
-        console.log(scoresMatch)
         const matchWinner = getMatchWinnerFromScore(scoresMatch);
         if(matchWinner === "Tie") {
             resultString = matchWinner;
@@ -125,5 +200,5 @@ function MatchRow({match, teamNumber, rankMap, resultsMatch, scoresMatch}: {matc
                 })}
             </td>
         </tr>
-    )
+    );
 }

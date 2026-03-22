@@ -32,15 +32,29 @@ export type UnFilledQueueMatch = {
     label: string;
     status: string;
     times: TimesObject;
-}
+};
+export type BlueFilledQueueMatch = {
+    label: string;
+    status: string;
+    blueTeams: string[];
+    times: TimesObject;
+};
+export type RedFilledQueueMatch = {
+    label: string;
+    status: string;
+    redTeams: string[];
+    times: TimesObject;
+};
+export type SemiFilledQueueMatch = BlueFilledQueueMatch | RedFilledQueueMatch;
 export type FilledQueueMatch = {
     label: string;
     status: string;
     redTeams: string[];
     blueTeams: string[];
     times: TimesObject;
-}
-export type QueueMatchObject = UnFilledQueueMatch | FilledQueueMatch;
+};
+export type PartiallyFilledQueueMatch = SemiFilledQueueMatch | FilledQueueMatch;
+export type QueueMatchObject = UnFilledQueueMatch | PartiallyFilledQueueMatch;
 export type AnnouncementObject = {
     id: string;
     postedTime: number;

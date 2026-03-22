@@ -1,4 +1,4 @@
-import type { FilledQueueMatch, FIRSTEventsObject, FIRSTMatchObject, FIRSTScoreMatchObject, QueueEventObject, QueueMatchObject, RankingObject, RankingsObject, RankMap } from "./dataTypes.ts";
+import type { BlueFilledQueueMatch, FilledQueueMatch, FIRSTEventsObject, FIRSTMatchObject, FIRSTScoreMatchObject, PartiallyFilledQueueMatch, QueueEventObject, QueueMatchObject, RankingObject, RankingsObject, RankMap, RedFilledQueueMatch } from "./dataTypes.ts";
 
 export function formatCountdown(currentTime: Date, nextQueueTime: Date, nextOnDeckTime: Date, nextOnFieldTime: Date): {countdownLabel: string, countdownValue: string} {
     const queueDifference = nextQueueTime.getTime() - currentTime.getTime();
@@ -51,31 +51,72 @@ export function sortEvents(events: FIRSTEventsObject): FIRSTEventsObject {
     })}
 }
 
-export function filterTeamMatches(teamNumber: number, event: QueueEventObject): FilledQueueMatch[] {
-    return event.matches.filter((match) => match.hasOwnProperty("redTeams") ? (match as FilledQueueMatch).redTeams.includes(teamNumber.toString()) || (match as FilledQueueMatch).blueTeams.includes(teamNumber.toString()) : false) as FilledQueueMatch[];
+export function isBlueFilled(match: QueueMatchObject) {
+    return match.hasOwnProperty("blueTeams") && (match as BlueFilledQueueMatch).blueTeams.length;
 }
 
-export function getNextTeamMatch(matches: QueueMatchObject[]): QueueMatchObject {
+export function isRedFilled(match: QueueMatchObject) {
+    return match.hasOwnProperty("redTeams") && (match as RedFilledQueueMatch).redTeams.length;
+}
+
+export function isFilled(match: QueueMatchObject) {
+    return isBlueFilled(match) && isRedFilled(match);
+}
+
+export function isSemiFilled(match: QueueMatchObject) {
+    const blueFilled = isBlueFilled(match);
+    const redFilled = isRedFilled(match);
+    return (blueFilled || redFilled) && !(blueFilled && redFilled);
+}
+
+export function filterTeamMatches(teamNumber: number, event: QueueEventObject): PartiallyFilledQueueMatch[] {
+    return event.matches.filter((match) => {
+        if(isFilled(match)) {
+            return (match as FilledQueueMatch).redTeams.includes(teamNumber.toString()) || (match as FilledQueueMatch).blueTeams.includes(teamNumber.toString())
+        }
+        else if(isBlueFilled(match)) {
+            return (match as BlueFilledQueueMatch).blueTeams.includes(teamNumber.toString());
+        }
+        else if(isRedFilled(match)) {
+            return (match as RedFilledQueueMatch).redTeams.includes(teamNumber.toString());
+        }
+        return false;
+    }) as PartiallyFilledQueueMatch[];
+}
+
+export function getNextTeamMatch(matches:PartiallyFilledQueueMatch[]):PartiallyFilledQueueMatch {
     return matches.find((match) => match.status !== "On field") || matches.at(-1)!;
 }
 
-export function getTeamAllianceClassName(teamNumber: number, match: FilledQueueMatch): "blueMatch" | "redMatch" | "" {
-    return match.blueTeams.includes(teamNumber.toString()) ? "blueMatch" : (match.redTeams.includes(teamNumber.toString()) ? "redMatch" : "");
+export function getTeamAllianceClassName(teamNumber: number, match: PartiallyFilledQueueMatch): "blueMatch" | "redMatch" | "" {
+    if(isBlueFilled(match) && (match as BlueFilledQueueMatch).blueTeams.includes(teamNumber.toString())) {
+        return "blueMatch";
+    }
+    else if(isRedFilled(match) && (match as RedFilledQueueMatch).redTeams.includes(teamNumber.toString())) {
+        return "redMatch"
+    }
+    return ""
 }
 
 export function getTeamAllianceColor(teamNumber: number, match: FilledQueueMatch): "Blue" | "Red" | "" {
     return match.blueTeams.includes(teamNumber.toString()) ? "Blue" : (match.redTeams.includes(teamNumber.toString()) ? "Red" : "");
 }
 
-export function getTeamAllianceStation(teamNumber: number, match: FilledQueueMatch): string {
-    for(let i = 0; i < match.blueTeams.length; i++) {
-        if(match.blueTeams[i] === teamNumber.toString()) {
-            return `Blue ${i + 1}`;
+export function getTeamAllianceStation(teamNumber: number, match: PartiallyFilledQueueMatch): string {
+    if(isBlueFilled(match)) {
+        match = match as BlueFilledQueueMatch;
+        for(let i = 0; i < match.blueTeams.length; i++) {
+            if(match.blueTeams[i] === teamNumber.toString()) {
+                return `Blue ${i + 1}`;
+            }
         }
     }
-    for(let i = 0; i < match.redTeams.length; i++) {
-        if(match.redTeams[i] === teamNumber.toString()) {
-            return `Red ${i + 1}`;
+    if(isRedFilled(match)) {
+        match = match as RedFilledQueueMatch;
+        for(let i = 0; i < match.redTeams.length; i++) {
+            if(match.redTeams[i] === teamNumber.toString()) {
+                return `Red ${i + 1}`;
+            }
         }
     }
     return "Not found";

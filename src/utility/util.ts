@@ -106,8 +106,8 @@ export function getRecordString(ranking: RankingObject): string {
     return `${ranking.wins}-${ranking.losses}-${ranking.ties}`;
 }
 
-export function getMatchWinner(match: FIRSTMatchObject): "Blue" | "Red" | "Tie" {
-    return match.scoreBlueFinal === match.scoreRedFinal ? "Tie" : (match.scoreBlueFinal > match.scoreRedFinal ? "Blue" : "Red");
+export function getMatchWinner(match: FIRSTMatchObject): "Blue" | "Red" | "Tie" | undefined {
+    return match.scoreBlueFinal && match.scoreRedFinal ? match.scoreBlueFinal === match.scoreRedFinal ? "Tie" : (match.scoreBlueFinal > match.scoreRedFinal ? "Blue" : "Red") : undefined;
 }
 
 export function getMatchWinnerFromScore(match: FIRSTScoreMatchObject): "Blue" | "Red" | "Tie" {

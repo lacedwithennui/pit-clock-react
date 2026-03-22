@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useMatchResults, useMatchScores } from "../../utility/api.ts";
-import { type FilledQueueMatch, type FIRSTMatchObject, type FIRSTScoreMatchObject, type QueueMatchObject, type RankMap } from "../../utility/dataTypes.ts";
+import { type FilledQueueMatch, type FIRSTMatchObject, type FIRSTScoreMatchObject, type RankMap } from "../../utility/dataTypes.ts";
 import { getMatchWinner, getMatchWinnerFromScore, getTeamAllianceColor } from "../../utility/util.ts";
 
 export default function MatchSchedule({matches, rankMap}: {matches: FilledQueueMatch[], rankMap: RankMap}) {
@@ -71,15 +71,17 @@ export default function MatchSchedule({matches, rankMap}: {matches: FilledQueueM
 function MatchRow({match, teamNumber, rankMap, resultsMatch, scoresMatch}: {match: FilledQueueMatch, teamNumber: number, rankMap: RankMap, resultsMatch?: FIRSTMatchObject, scoresMatch?: FIRSTScoreMatchObject}) {
     let resultString = "";
     if(resultsMatch) {
+        console.log(resultsMatch)
         const matchWinner = getMatchWinner(resultsMatch);
-        if(matchWinner === "Tie") {
+        if(matchWinner && matchWinner === "Tie") {
             resultString = matchWinner;
         }
-        else {
+        else if(matchWinner) {
             resultString = getTeamAllianceColor(teamNumber!, match) === matchWinner ? "Win" : "Loss";
         }
     }
     else if(scoresMatch) {
+        console.log(scoresMatch)
         const matchWinner = getMatchWinnerFromScore(scoresMatch);
         if(matchWinner === "Tie") {
             resultString = matchWinner;

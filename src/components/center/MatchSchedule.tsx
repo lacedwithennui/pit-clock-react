@@ -1,13 +1,20 @@
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useMatchResults, useMatchScores } from "../../utility/api.ts";
-import { getMatchWinner, getMatchWinnerFromScore, getTeamAllianceColor, isBlueFilled, isFilled, isRedFilled, isSemiFilled } from "../../utility/util.ts";
 import type { MatchResults, MatchScores, Rankings } from "../../utility/types/first.ts";
+import { type WonMatchesMap } from "../../utility/types/local.ts";
 import type { BlueOnlyMatch, FullMatch, OneAllianceMatch, OneOrMoreAlliancesMatch, RedOnlyMatch } from "../../utility/types/nexus.ts";
+import { getMatchWinner, getMatchWinnerFromScore, getTeamAllianceColor, isBlueFilled, isFilled, isRedFilled, isSemiFilled } from "../../utility/util.ts";
+import { useReward } from "react-rewards";
 
 export default function MatchSchedule({matches, rankMap}: {matches: OneOrMoreAlliancesMatch[], rankMap: Rankings.RankMap}) {
+    const [wonMatches, setWonMatches] = useState<WonMatchesMap>(new Map<string, boolean>());
+    
     const params = useParams();
     const matchResultsQuery = useMatchResults(params.season!, params.eventCode!, +params.teamNumber!);
     const matchScoresQuery = useMatchScores(params.season!, params.eventCode!, +params.teamNumber!);
+    const confettiReward = useReward("center", "confetti", {angle: 270, startVelocity: 15});
+    const balloonsReward = useReward("balloonsAnchor", "balloons", {spread: 80, startVelocity: 5, lifetime: 250, elementSize: 40});
 
     function mapOneMatch(match: OneOrMoreAlliancesMatch, resultsMatch?: MatchResults.Match, scoresMatch?: MatchScores.Match) {
         if(isFilled(match)) {
@@ -19,6 +26,10 @@ export default function MatchSchedule({matches, rankMap}: {matches: OneOrMoreAll
                     rankMap={rankMap}
                     resultsMatch={resultsMatch}
                     scoresMatch={scoresMatch}
+                    wonMatches={wonMatches}
+                    setWonMatchesCallback={(map: WonMatchesMap) => setWonMatches(map)}
+                    confettiReward={confettiReward}
+                    balloonsReward={balloonsReward}
                 />
             );
         }
@@ -61,7 +72,7 @@ export default function MatchSchedule({matches, rankMap}: {matches: OneOrMoreAll
     }
 
     return (
-        <div className="matchSchedule">
+        <div className="matchSchedule" id="matchSchedule">
             <table>
                 <thead>
                     <tr>
@@ -146,7 +157,7 @@ function PartialMatchRow({match, teamNumber, rankMap}: {match: OneAllianceMatch,
     }
 }
 
-function MatchRow({match, teamNumber, rankMap, resultsMatch, scoresMatch}: {match: FullMatch, teamNumber: number, rankMap: Rankings.RankMap, resultsMatch?: MatchResults.Match, scoresMatch?: MatchScores.Match}) {
+function MatchRow({match, teamNumber, rankMap, resultsMatch, scoresMatch, wonMatches, setWonMatchesCallback, confettiReward, balloonsReward}: {match: FullMatch, teamNumber: number, rankMap: Rankings.RankMap, resultsMatch?: MatchResults.Match, scoresMatch?: MatchScores.Match, wonMatches: WonMatchesMap, setWonMatchesCallback: (map: WonMatchesMap) => void, confettiReward?: any, balloonsReward?: any}) {
     let resultString = "";
     if(resultsMatch) {
         const matchWinner = getMatchWinner(resultsMatch);
@@ -165,6 +176,17 @@ function MatchRow({match, teamNumber, rankMap, resultsMatch, scoresMatch}: {matc
         else {
             resultString = getTeamAllianceColor(teamNumber!, match) === matchWinner ? "Win" : "Loss";
         }
+    }
+    if(!wonMatches.has(match.label) && resultString === "Win") {
+        if(Math.round(Math.random())) {
+            confettiReward.reward();
+        }
+        else {
+            balloonsReward.reward();
+        }
+        const newWonMatchesMap = new Map(wonMatches);
+        newWonMatchesMap.set(match.label, resultString === "Win");
+        setWonMatchesCallback(newWonMatchesMap);
     }
     return (
         <tr>

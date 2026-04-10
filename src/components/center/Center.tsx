@@ -62,8 +62,11 @@ export default function Center() {
     }
 
     return (
-        <div className="center">
-            {conditionalRender()}
-        </div>
+        <>
+            <div className="center" id="center">
+                {conditionalRender()}
+                <div id="balloonsAnchor"></div>
+            </div>
+        </>
     );
 }

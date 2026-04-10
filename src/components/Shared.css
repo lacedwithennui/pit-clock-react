@@ -29,7 +29,7 @@
 .allRankings p {
     width: 50%;
     text-wrap: nowrap;
-    /* font-size: 1.25rem; */
+    font-size: 0.85rem;
     margin: 0.25rem;
     font-weight: 600;
 }
